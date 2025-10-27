@@ -1,0 +1,19 @@
+# Pinned backend dependencies compatible with Supabase Python SDK
+# Note: Avoid listing Supabase internal sub-dependencies (realtime, postgrest,
+# storage3, gotrue) explicitly to prevent version mismatches.
+
+Flask==3.0.3
+Flask-CORS==4.0.1
+python-dotenv==1.0.1
+requests==2.32.3
+
+# Supabase Python client (installs gotrue, postgrest, realtime, storage3 as deps)
+supabase==2.7.3
+
+# Realtime depends on the 'websockets' package. The error
+# "No module named websockets.asyncio" indicates an old or missing websockets.
+# Pin to a modern version that provides websockets.asyncio.* modules.
+websockets>=12,<14
+
+# Optional for production serving (not needed for local dev on Windows)
+gunicorn==21.2.0

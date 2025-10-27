@@ -1,0 +1,14 @@
+.env
+
+
+database_setup.sql
+QUICK_FIX.sql
+RLS_FIX_GUIDE.md
+
+
+__pycache__/
+
+
+BILLERS_SETUP_GUIDE.md
+PROFILES_RLS_SIMPLE.sql
+PROFILES_RLS_POLICIES.sql
