@@ -9,6 +9,7 @@ load_dotenv()
 # Import routes
 from routes.supplier_routes import supplier_bp
 from routes.biller_routes import biller_bp
+from routes.product_routes import product_bp
 
 def create_app():
     app = Flask(__name__)
@@ -25,6 +26,7 @@ def create_app():
     # Register blueprints
     app.register_blueprint(supplier_bp)
     app.register_blueprint(biller_bp)
+    app.register_blueprint(product_bp)
     
     # Health check endpoint
     @app.route('/health', methods=['GET'])
@@ -40,6 +42,7 @@ def create_app():
             'endpoints': {
                 'suppliers': '/api/suppliers',
                 'billers': '/api/billers',
+                'products': '/api/products',
                 'health': '/health'
             }
         }), 200
