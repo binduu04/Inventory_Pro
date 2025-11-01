@@ -1042,7 +1042,7 @@ const InventoryManagement = () => {
                             <div className="text-sm font-medium text-gray-900">{product.product_name}</div>
                           </td>
                           <td className="px-6 py-4 text-sm text-gray-600">
-                            <span className="px-2 py-1 bg-indigo-100 text-indigo-800 rounded-full text-xs font-medium">
+                            <span className="badge whitespace-nowrap px-2 py-1 bg-indigo-100 text-indigo-800 rounded-full text-xs font-medium">
                               {product.category}
                             </span>
                           </td>
@@ -1065,14 +1065,12 @@ const InventoryManagement = () => {
                               className="text-indigo-600 hover:text-indigo-900 mr-3 inline-flex items-center gap-1"
                             >
                               <Edit2 size={16} />
-                              Edit
                             </button>
                             <button
                               onClick={() => handleDelete(product.id)}
                               className="text-red-600 hover:text-red-900 inline-flex items-center gap-1"
                             >
                               <Trash2 size={16} />
-                              Delete
                             </button>
                           </td>
                         </tr>
