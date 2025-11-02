@@ -140,3 +140,50 @@ def get_seasonal_products():
     except Exception as e:
         print(f"Error fetching seasonal products: {str(e)}")
         return jsonify({'error': str(e)}), 500
+
+
+#for updating customer profile in customer dashbaord
+@customer_bp.route('/profile', methods=['PUT'])
+@verify_token
+def update_customer_profile():
+    """Update customer's profile information (name and phone only)"""
+    try:
+        # Get the authenticated user's ID from the token
+        auth_header = request.headers.get('Authorization')
+        if not auth_header or not auth_header.startswith('Bearer '):
+            return jsonify({'error': 'No token provided'}), 401
+        
+        token = auth_header.split(' ')[1]
+        supabase = get_authenticated_client()
+        
+        # Verify the token and get user info
+        user_response = supabase.auth.get_user(token)
+        if not user_response.user:
+            return jsonify({'error': 'Invalid token'}), 401
+        
+        user_id = user_response.user.id
+        
+        # Get the request data
+        data = request.get_json()
+        
+        # Only allow updating certain fields
+        allowed_fields = ['full_name', 'phone']
+        update_data = {k: v for k, v in data.items() if k in allowed_fields}
+        
+        if not update_data:
+            return jsonify({'error': 'No valid fields to update'}), 400
+        
+        # Update the profile
+        response = supabase.table('profiles').update(update_data).eq('id', user_id).eq('role', 'customer').execute()
+        
+        if response.data:
+            return jsonify({
+                'message': 'Profile updated successfully',
+                'user': response.data[0]
+            }), 200
+        else:
+            return jsonify({'error': 'Profile not found or unauthorized'}), 404
+            
+    except Exception as e:
+        print(f"Error updating customer profile: {str(e)}")
+        return jsonify({'error': str(e)}), 500
