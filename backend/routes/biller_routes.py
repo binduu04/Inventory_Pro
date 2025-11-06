@@ -4,6 +4,100 @@ from utils.auth import verify_token, require_role, get_authenticated_client
 
 biller_bp = Blueprint('billers', __name__, url_prefix='/api/billers')
 
+#product routes for biller view
+
+
+@biller_bp.route('/check-auth', methods=['GET'])
+@verify_token
+def check_auth():
+    """Debug endpoint to check authentication and role"""
+    return jsonify({
+        'authenticated': True,
+        'user_id': request.user_id,
+        'email': request.user_email,
+        'role': request.user_role,
+        'user_metadata': request.user.user_metadata if hasattr(request, 'user') else {}
+    }), 200
+
+
+@biller_bp.route('/products', methods=['GET'])
+@verify_token
+@require_role(['biller', 'manager'])
+def get_products_for_billing():
+    """Get all products for biller to create orders"""
+    try:
+        supabase = get_authenticated_client()
+        
+        # Get category filter from query params
+        category = request.args.get('category')
+        
+        query = supabase.table('products').select(
+            'id, product_name, category, selling_price, current_stock, image_url, '
+            'festival_discount_percent, flash_sale_discount_percent'
+        )
+        
+        # Apply category filter if provided
+        if category and category != 'all':
+            query = query.eq('category', category)
+        
+        # Only show products with stock
+        query = query.gt('current_stock', 0)
+        
+        response = query.order('product_name').execute()
+        
+        # Calculate effective discount and final price for each product
+        products = []
+        for product in response.data:
+            festival_discount = product.get('festival_discount_percent') or 0
+            flash_discount = product.get('flash_sale_discount_percent') or 0
+            
+            # Use the higher discount
+            discount_percent = max(festival_discount, flash_discount)
+            
+            selling_price = product['selling_price']
+            discount_amount = (selling_price * discount_percent) / 100
+            final_price = selling_price - discount_amount
+            
+            products.append({
+                **product,
+                'discount_percent': discount_percent,
+                'discount_amount': discount_amount,
+                'final_price': final_price
+            })
+        
+        return jsonify({'products': products}), 200
+        
+    except Exception as e:
+        print(f"Error fetching products for biller: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+@biller_bp.route('/categories', methods=['GET'])
+@verify_token
+@require_role(['biller', 'manager'])
+def get_categories_for_billing():
+    """Get all unique categories for filtering"""
+    try:
+        supabase = get_authenticated_client()
+        
+        response = supabase.table('products').select('category').execute()
+        
+        # Get unique categories
+        categories = list(set([p['category'] for p in response.data if p.get('category')]))
+        categories.sort()
+        
+        return jsonify({'categories': categories}), 200
+        
+    except Exception as e:
+        print(f"Error fetching categories: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+    
+
+
+
+#biller _routes..
+
+
 @biller_bp.route('/', methods=['POST'])
 @verify_token
 @require_role('manager')

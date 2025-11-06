@@ -29,7 +29,10 @@ def verify_token(f):
             request.user_id = response.user.id
             request.user_email = response.user.email
             request.user_role = response.user.user_metadata.get('role', 'customer')
+            request.user = response.user  # Store full user object
             request.access_token = token  # Store the access token for RLS
+            
+            print(f"User authenticated: {request.user_email}, Role: {request.user_role}")
             
             return f(*args, **kwargs)
             
@@ -47,14 +50,21 @@ def get_authenticated_client():
     return get_supabase_client_with_token(token)
 
 def require_role(required_role):
-    """Decorator to check user role"""
+    """Decorator to check user role - accepts single role or list of roles"""
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
             user_role = getattr(request, 'user_role', None)
             
-            if user_role != required_role:
-                return jsonify({'error': 'Insufficient permissions'}), 403
+            # Handle both single role and list of roles
+            if isinstance(required_role, list):
+                if user_role not in required_role:
+                    print(f"Access denied: User role '{user_role}' not in required roles {required_role}")
+                    return jsonify({'error': 'Insufficient permissions', 'user_role': user_role, 'required': required_role}), 403
+            else:
+                if user_role != required_role:
+                    print(f"Access denied: User role '{user_role}' != required role '{required_role}'")
+                    return jsonify({'error': 'Insufficient permissions', 'user_role': user_role, 'required': required_role}), 403
             
             return f(*args, **kwargs)
         
