@@ -28,9 +28,23 @@ def verify_token(f):
             # Add user info to request
             request.user_id = response.user.id
             request.user_email = response.user.email
-            request.user_role = response.user.user_metadata.get('role', 'customer')
             request.user = response.user  # Store full user object
             request.access_token = token  # Store the access token for RLS
+            
+            # Fetch role from profiles table using the USER'S token (not admin)
+            # This bypasses RLS issues since user can read their own profile
+            try:
+                user_supabase = get_supabase_client_with_token(token)
+                profile_response = user_supabase.table('profiles').select('role').eq('id', response.user.id).execute()
+                
+                if profile_response.data and len(profile_response.data) > 0:
+                    request.user_role = profile_response.data[0]['role']
+                else:
+                    # Fallback to user_metadata if profile not found
+                    request.user_role = response.user.user_metadata.get('role', 'customer')
+            except Exception as profile_error:
+                print(f"Could not fetch profile: {str(profile_error)}, using metadata")
+                request.user_role = response.user.user_metadata.get('role', 'customer')
             
             print(f"User authenticated: {request.user_email}, Role: {request.user_role}")
             

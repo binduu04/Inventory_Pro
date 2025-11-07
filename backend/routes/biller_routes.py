@@ -284,3 +284,107 @@ def delete_biller(biller_id):
     except Exception as e:
         print(f"Error deleting biller: {str(e)}")
         return jsonify({'error': str(e)}), 500
+
+
+from datetime import datetime
+
+@biller_bp.route('/sales', methods=['POST'])
+@verify_token
+@require_role(['biller', 'manager'])
+def create_offline_sale():
+    """
+    Create a new offline sale and its sale items.
+    This will insert one row in 'sales' and multiple rows in 'sale_items'.
+    """
+    try:
+        data = request.get_json()
+
+        # Basic validation
+        required_fields = ['customer_name', 'customer_phone', 'items']
+        for field in required_fields:
+            if field not in data or not data[field]:
+                return jsonify({'error': f'{field} is required'}), 400
+
+        if not isinstance(data['items'], list) or len(data['items']) == 0:
+            return jsonify({'error': 'At least one item is required'}), 400
+
+        supabase = get_authenticated_client()
+
+        # 1️⃣ Insert into sales table
+        sale_data = {
+            'sale_date': datetime.utcnow().isoformat(),
+            'sale_type': 'OFFLINE',
+            'customer_name': data['customer_name'],
+            'customer_phone': data['customer_phone'],
+            'created_by_biller_id': request.user_id,
+            'packed_by_biller_id': request.user_id,
+            'completed_by_biller_id': request.user_id,
+            'total_amount': data.get('total_amount', 0),
+            'payment_method': data.get('payment_method', 'CASH'),
+        }
+
+        sale_insert = supabase.table('sales').insert(sale_data).execute()
+
+        if not sale_insert.data:
+            return jsonify({'error': 'Failed to create sale record'}), 500
+
+        sale_id = sale_insert.data[0]['sale_id']
+
+        # 2️⃣ Insert into sale_items table
+        sale_items_data = []
+        for item in data['items']:
+            product_id = item.get('id')
+            quantity = item.get('quantity')
+            price = item.get('final_price') or item.get('selling_price') or item.get('price')
+            subtotal = round(price * quantity, 2)
+
+            if not product_id or not quantity:
+                return jsonify({'error': 'Invalid product in items list'}), 400
+
+            sale_items_data.append({
+                'sale_id': sale_id,
+                'product_id': product_id,
+                'quantity': quantity,
+                'unit_price': price,
+                'subtotal': subtotal,
+            })
+
+        if sale_items_data:
+            supabase.table('sale_items').insert(sale_items_data).execute()
+
+        return jsonify({
+            'message': 'Sale and items added successfully',
+            'sale_id': sale_id,
+            'total_items': len(sale_items_data)
+        }), 201
+
+    except Exception as e:
+        print(f"Error creating sale: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+@biller_bp.route('/sales', methods=['GET'])
+@verify_token
+@require_role(['biller', 'manager'])
+def get_sales_by_biller():
+    """
+    Fetch all sales created by the logged-in biller, sorted by date (newest first).
+    """
+    try:
+        supabase = get_authenticated_client()
+
+        response = (
+            supabase.table('sales')
+            .select('*')
+            .eq('created_by_biller_id', request.user_id)
+            .order('sale_date', desc=True)
+            .execute()
+        )
+
+        sales = response.data or []
+
+        return jsonify({'sales': sales, 'count': len(sales)}), 200
+
+    except Exception as e:
+        print(f"Error fetching sales for biller: {str(e)}")
+        return jsonify({'error': str(e)}), 500
