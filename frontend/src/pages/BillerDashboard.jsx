@@ -1,22 +1,9 @@
 import React, { useState, useEffect } from "react";
-import {
-  ShoppingCart,
-  Package,
-  FileText,
-  LogOut,
-  Plus,
-  Minus,
-  Trash2,
-  Receipt,
-  Search,
-  X,
-  Menu,
-  Filter,
-  ChevronDown,
-  ChevronUp,
+import {ShoppingCart,Package,FileText,LogOut,Plus,Minus,Trash2,Search,X,Menu,Filter,ChevronDown,ChevronUp,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import BillerBillingHistory from "../components/BillerBillingHistory";
 
 const BillerDashboard = () => {
   const { user, signOut, session } = useAuth();
@@ -27,12 +14,15 @@ const BillerDashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [loading, setLoading] = useState(true);
   const [customerDetailsOpen, setCustomerDetailsOpen] = useState(false);
+  const [isGeneratingBill, setIsGeneratingBill] = useState(false);
+  const [showBillModal, setShowBillModal] = useState(false);
+  const [generatedBill, setGeneratedBill] = useState(null);
 
   // Load cart from localStorage on mount
   useEffect(() => {
@@ -195,6 +185,8 @@ const BillerDashboard = () => {
       return;
     }
 
+    setIsGeneratingBill(true);
+
     try {
       const salePayload = {
         customer_name: customerName,
@@ -207,6 +199,7 @@ const BillerDashboard = () => {
           quantity: item.quantity,
           final_price: item.final_price,
           selling_price: item.selling_price,
+          discount_percent: item.discount_percent || 0,
         })),
       };
 
@@ -221,8 +214,32 @@ const BillerDashboard = () => {
 
       if (response.ok) {
         const data = await response.json();
-        alert(`✅ Bill created successfully!\nSale ID: ${data.sale_id}`);
-        clearCart();
+        
+        // Prepare bill data for modal
+        const billData = {
+          sale_id: data.sale_id,
+          date: new Date().toLocaleString(),
+          customer_name: customerName,
+          customer_phone: customerPhone,
+          items: cart.map((item) => ({
+            product_name: item.product_name,
+            quantity: item.quantity,
+            selling_price: item.selling_price,
+            discount_percent: item.discount_percent || 0,
+            final_price: item.final_price || item.selling_price,
+            subtotal: (item.final_price || item.selling_price) * item.quantity,
+          })),
+          total_amount: getTotal(),
+          payment_method: "CASH",
+        };
+
+        setGeneratedBill(billData);
+        setShowBillModal(true);
+        
+        // Clear cart after successful generation
+        setCart([]);
+        setCustomerName("");
+        setCustomerPhone("");
       } else {
         const error = await response.text();
         console.error("Error creating sale:", error);
@@ -231,6 +248,8 @@ const BillerDashboard = () => {
     } catch (error) {
       console.error("Error generating bill:", error);
       alert("Error creating sale");
+    } finally {
+      setIsGeneratingBill(false);
     }
   };
 
@@ -239,36 +258,62 @@ const BillerDashboard = () => {
     return name.split(" ")[0].charAt(0).toUpperCase();
   };
 
-  const [previousSales, setPreviousSales] = useState([]);
+  const downloadBill = () => {
+    if (!generatedBill) return;
 
-useEffect(() => {
-  if (activeTab === 'billing-history' && session?.access_token) {
-    fetchPreviousSales();
-  }
-}, [activeTab, session]);
+    const billContent = `
+========================================
+        KIRANA STORE
+========================================
+Address: 123 Main Street, City
+Phone: +91 9876543210
+GST No: 29XXXXX1234X1ZX
+========================================
 
-const fetchPreviousSales = async () => {
-  try {
-    setLoading(true);
-    const response = await fetch('http://localhost:5000/api/billers/sales', {
-      headers: {
-        'Authorization': `Bearer ${session?.access_token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    if (response.ok) {
-      const data = await response.json();
-      setPreviousSales(data.sales || []);
-    } else {
-      console.error('Failed to fetch sales');
+Bill No: ${generatedBill.sale_id}
+Date: ${generatedBill.date}
+
+Customer: ${generatedBill.customer_name}
+Phone: ${generatedBill.customer_phone}
+
+========================================
+ITEMS
+========================================
+${generatedBill.items
+  .map(
+    (item, idx) => `
+${idx + 1}. ${item.product_name}
+   Qty: ${item.quantity} × ₹${item.selling_price.toFixed(2)}${
+      item.discount_percent > 0
+        ? `
+   Discount: ${item.discount_percent}% OFF
+   Price: ₹${item.final_price.toFixed(2)}`
+        : ""
     }
-  } catch (error) {
-    console.error('Error fetching sales:', error);
-  } finally {
-    setLoading(false);
-  }
-};
+   Subtotal: ₹${item.subtotal.toFixed(2)}
+`
+  )
+  .join("")}
+========================================
 
+TOTAL AMOUNT: ₹${generatedBill.total_amount.toFixed(2)}
+Payment Method: ${generatedBill.payment_method}
+
+========================================
+     Thank you for shopping!
+========================================
+    `;
+
+    const blob = new Blob([billContent], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `Bill_${generatedBill.sale_id}_${new Date().getTime()}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -392,53 +437,10 @@ const fetchPreviousSales = async () => {
             </div>
           )}
 
-          {/* {activeTab === 'billing-history' && (
-            <div className="h-full flex items-center justify-center bg-gray-50">
-              <div className="text-center">
-                <FileText size={80} className="mx-auto text-gray-300 mb-4" />
-                <h2 className="text-3xl font-bold text-gray-700 mb-2">Coming Soon</h2>
-                <p className="text-gray-500">Billing history feature will be available soon</p>
-              </div>
-            </div>
-          )} */}
-
+        
           {activeTab === "billing-history" && (
-            <div className="h-full p-6 overflow-auto bg-gray-50">
-              <h2 className="text-xl font-bold mb-4 text-gray-800">
-                My Previous Sales
-              </h2>
-              <div className="space-y-3">
-                {loading ? (
-                  <p>Loading sales...</p>
-                ) : previousSales.length === 0 ? (
-                  <p className="text-gray-500">No sales found.</p>
-                ) : (
-                  previousSales.map((sale) => (
-                    <div
-                      key={sale.sale_id}
-                      className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm"
-                    >
-                      <div className="flex justify-between items-center mb-2">
-                        <h3 className="font-semibold text-gray-800">
-                          Sale #{sale.sale_id}
-                        </h3>
-                        <span className="text-sm text-gray-500">
-                          {new Date(sale.sale_date).toLocaleString()}
-                        </span>
-                      </div>
-                      <p className="text-gray-700 text-sm">
-                        Customer: {sale.customer_name} ({sale.customer_phone})
-                      </p>
-                      <p className="text-gray-700 text-sm">
-                        Total: ₹{sale.total_amount}
-                      </p>
-                      <p className="text-gray-500 text-xs">
-                        Status: {sale.order_status}
-                      </p>
-                    </div>
-                  ))
-                )}
-              </div>
+            <div className="h-full overflow-auto bg-gray-50">
+              <BillerBillingHistory session={session} />
             </div>
           )}
 
@@ -740,9 +742,17 @@ const fetchPreviousSales = async () => {
 
                     <button
                       onClick={generateBill}
-                      className="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-1.5 rounded-lg flex items-center justify-center gap-2 transition-all shadow-sm active:scale-95"
+                      disabled={isGeneratingBill}
+                      className="w-full bg-orange-600 hover:bg-orange-700 disabled:bg-orange-400 disabled:cursor-not-allowed text-white font-semibold py-1.5 rounded-lg flex items-center justify-center gap-2 transition-all shadow-sm active:scale-95"
                     >
-                      GENERATE BILL
+                      {isGeneratingBill ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                          GENERATING...
+                        </>
+                      ) : (
+                        "GENERATE BILL"
+                      )}
                     </button>
                   </div>
                 )}
@@ -751,6 +761,156 @@ const fetchPreviousSales = async () => {
           )}
         </main>
       </div>
+
+      {/* Bill Modal - Minimal & Professional */}
+      {showBillModal && generatedBill && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col relative">
+            
+            {/* Close Button */}
+            <button
+              onClick={() => setShowBillModal(false)}
+              className="absolute top-4 right-4 z-10 text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <X size={24} />
+            </button>
+
+            {/* Bill Content - Scrollable */}
+            <div className="flex-1 overflow-auto p-8">
+              
+              {/* Invoice Header */}
+              <div className="mb-8">
+                <div className="flex items-start justify-between mb-6">
+                  <div>
+                    <h1 className="text-3xl font-bold text-gray-900 mb-2">KIRANA STORE</h1>
+                    <p className="text-sm text-gray-600">Shop No. 12, Gandhi Market</p>
+                    <p className="text-sm text-gray-600">MG Road, Bangalore - 560001</p>
+                    <p className="text-sm text-gray-600">+91 98765 43210</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Invoice</p>
+                    <p className="text-2xl font-bold text-gray-900">#{String(generatedBill.sale_id).padStart(6, '0')}</p>
+                  </div>
+                </div>
+
+                {/* Info Grid */}
+                <div className="grid grid-cols-4 gap-6 pt-6 border-t border-gray-200">
+                  <div>
+                    <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Date</p>
+                    <p className="text-sm font-semibold text-gray-900">
+                      {new Date(generatedBill.date).toLocaleDateString('en-IN', { 
+                        day: 'numeric',
+                        month: 'short', 
+                        year: 'numeric'
+                      })}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Time</p>
+                    <p className="text-sm font-semibold text-gray-900">
+                      {new Date(generatedBill.date).toLocaleTimeString('en-IN', { 
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true
+                      })}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Customer</p>
+                    <p className="text-sm font-semibold text-gray-900">{generatedBill.customer_name}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Phone</p>
+                    <p className="text-sm font-semibold text-gray-900">{generatedBill.customer_phone}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Items Table */}
+              <div className="mb-8">
+                {/* Table Header */}
+                <div className="grid grid-cols-12 gap-4 pb-3 mb-3 border-b-2 border-gray-900">
+                  <div className="col-span-5 text-xs font-bold text-gray-900 uppercase tracking-wider">Item</div>
+                  <div className="col-span-2 text-xs font-bold text-gray-900 uppercase tracking-wider text-center">Quantity</div>
+                  <div className="col-span-2 text-xs font-bold text-gray-900 uppercase tracking-wider text-right">Price</div>
+                  <div className="col-span-3 text-xs font-bold text-gray-900 uppercase tracking-wider text-right">Amount</div>
+                </div>
+
+                {/* Table Body */}
+                <div className="space-y-4">
+                  {generatedBill.items.map((item, index) => (
+                    <div key={index} className="grid grid-cols-12 gap-4 items-start">
+                      <div className="col-span-5">
+                        <p className="font-medium text-gray-900">{item.product_name}</p>
+                        {item.discount_percent > 0 && (
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className="text-xs font-semibold text-green-600">
+                              {item.discount_percent}% OFF
+                            </span>
+                            <span className="text-xs text-gray-400 line-through">₹{item.selling_price.toFixed(2)}</span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="col-span-2 text-center">
+                        <span className="text-sm text-gray-700">{item.quantity}</span>
+                      </div>
+                      <div className="col-span-2 text-right">
+                        <p className="text-sm text-gray-900">₹{item.final_price.toFixed(2)}</p>
+                      </div>
+                      <div className="col-span-3 text-right">
+                        <p className="text-sm font-semibold text-gray-900">₹{item.subtotal.toFixed(2)}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Total Section */}
+              <div className="pt-6 border-t border-gray-200">
+                <div className="flex justify-end mb-8">
+                  <div className="w-64 space-y-3">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Subtotal</span>
+                      <span className="font-medium text-gray-900">₹{generatedBill.total_amount.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Tax</span>
+                      <span className="font-medium text-gray-900">₹0.00</span>
+                    </div>
+                    <div className="flex justify-between pt-3 border-t-2 border-gray-900">
+                      <span className="text-base font-bold text-gray-900">Total</span>
+                      <span className="text-xl font-bold text-gray-900">₹{generatedBill.total_amount.toFixed(2)}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-right">
+                  <p className="text-xs text-gray-500">Payment Method: <span className="font-semibold text-gray-700 uppercase">{generatedBill.payment_method}</span></p>
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="mt-12 pt-6 border-t border-gray-200 text-center">
+                <p className="text-xs text-gray-500">Thank you for your business</p>
+              </div>
+
+            </div>
+
+            {/* Action Footer */}
+            <div className="border-t border-gray-200 px-8 py-5 bg-gray-50">
+              <button
+                onClick={downloadBill}
+                className="w-full bg-gray-900 hover:bg-gray-800 text-white font-medium py-3.5 px-6 rounded-lg transition-all flex items-center justify-center gap-2"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Download Invoice
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -388,3 +388,49 @@ def get_sales_by_biller():
     except Exception as e:
         print(f"Error fetching sales for biller: {str(e)}")
         return jsonify({'error': str(e)}), 500
+
+
+@biller_bp.route('/sales/<int:sale_id>/items', methods=['GET'])
+@verify_token
+@require_role(['biller', 'manager'])
+def get_sale_items(sale_id):
+    """
+    Fetch all items for a specific sale with product details.
+    """
+    try:
+        supabase = get_authenticated_client()
+
+        # First verify the sale belongs to this biller
+        sale_check = (
+            supabase.table('sales')
+            .select('sale_id')
+            .eq('sale_id', sale_id)
+            .eq('created_by_biller_id', request.user_id)
+            .execute()
+        )
+
+        if not sale_check.data:
+            return jsonify({'error': 'Sale not found or access denied'}), 404
+
+        # Fetch sale items with product details
+        response = (
+            supabase.table('sale_items')
+            .select('*, products(product_name)')
+            .eq('sale_id', sale_id)
+            .execute()
+        )
+
+        items = []
+        for item in response.data:
+            items.append({
+                'product_name': item['products']['product_name'],
+                'quantity': item['quantity'],
+                'unit_price': item['unit_price'],
+                'subtotal': item['subtotal']
+            })
+
+        return jsonify({'items': items, 'count': len(items)}), 200
+
+    except Exception as e:
+        print(f"Error fetching sale items: {str(e)}")
+        return jsonify({'error': str(e)}), 500
