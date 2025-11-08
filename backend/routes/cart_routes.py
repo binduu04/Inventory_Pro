@@ -4,311 +4,6 @@ from utils.auth import verify_token, require_role, get_authenticated_client
 
 cart_bp = Blueprint('cart', __name__)
 
-#(all these not there from line 308 its there)
-# Get cart items for logged-in customer (all these not there from line 308 its there)
-@cart_bp.route('/', methods=['GET'])
-@verify_token
-@require_role(['customer'])
-def get_cart():
-    try:
-        supabase = get_authenticated_client()
-        customer_id = request.user_id
-        
-        # Fetch cart items with product details
-        response = supabase.table('cart_items')\
-            .select('*, products(*)')\
-            .eq('customer_id', customer_id)\
-            .execute()
-        
-        cart_items = response.data
-        
-        # Format response
-        formatted_items = []
-        for item in cart_items:
-            product = item.get('products', {})
-            formatted_items.append({
-                'cart_item_id': item['cart_item_id'],
-                'id': product.get('id'),  # product_id
-                'product_name': product.get('product_name'),
-                'category': product.get('category'),
-                'selling_price': float(product.get('selling_price', 0)),
-                'festival_discount_percent': product.get('festival_discount_percent'),
-                'flash_sale_discount_percent': product.get('flash_sale_discount_percent'),
-                'image_url': product.get('image_url'),
-                'stock_quantity': product.get('stock_quantity'),
-                'quantity': item['quantity'],
-                'added_at': item['added_at']
-            })
-        
-        return jsonify({
-            'success': True,
-            'cart_items': formatted_items
-        }), 200
-        
-    except Exception as e:
-        print(f"Error fetching cart: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-
-
-# Add item to cart
-@cart_bp.route('/add', methods=['POST'])
-@verify_token
-@require_role(['customer'])
-def add_to_cart():
-    try:
-        supabase = get_authenticated_client()
-        customer_id = request.user_id
-        data = request.get_json()
-        
-        product_id = data.get('product_id')
-        quantity = data.get('quantity', 1)
-        
-        print(f"Adding to cart - Customer: {customer_id}, Product: {product_id}, Qty: {quantity}")
-        
-        if not product_id:
-            return jsonify({'error': 'Product ID is required'}), 400
-        
-        # Check if item already exists in cart
-        existing = supabase.table('cart_items')\
-            .select('*')\
-            .eq('customer_id', customer_id)\
-            .eq('product_id', product_id)\
-            .execute()
-        
-        print(f"Existing cart items: {existing.data}")
-        
-        if existing.data:
-            # Update quantity
-            new_quantity = existing.data[0]['quantity'] + quantity
-            print(f"Updating existing item to quantity: {new_quantity}")
-            response = supabase.table('cart_items')\
-                .update({'quantity': new_quantity})\
-                .eq('cart_item_id', existing.data[0]['cart_item_id'])\
-                .execute()
-            print(f"Update response: {response.data}")
-        else:
-            # Insert new item
-            print(f"Inserting new item")
-            response = supabase.table('cart_items')\
-                .insert({
-                    'customer_id': customer_id,
-                    'product_id': product_id,
-                    'quantity': quantity
-                })\
-                .execute()
-            print(f"Insert response: {response.data}")
-        
-        return jsonify({
-            'success': True,
-            'message': 'Item added to cart'
-        }), 200
-        
-    except Exception as e:
-        print(f"Error adding to cart: {str(e)}")
-        import traceback
-        traceback.print_exc()
-        return jsonify({'error': str(e)}), 500
-
-
-# Update cart item quantity
-@cart_bp.route('/update/<int:cart_item_id>', methods=['PUT'])
-@verify_token
-@require_role(['customer'])
-def update_cart_item(cart_item_id):
-    try:
-        supabase = get_authenticated_client()
-        customer_id = request.user_id
-        data = request.get_json()
-        
-        quantity = data.get('quantity')
-        
-        if quantity is None or quantity < 0:
-            return jsonify({'error': 'Valid quantity is required'}), 400
-        
-        if quantity == 0:
-            # Delete item if quantity is 0
-            response = supabase.table('cart_items')\
-                .delete()\
-                .eq('cart_item_id', cart_item_id)\
-                .eq('customer_id', customer_id)\
-                .execute()
-        else:
-            # Update quantity
-            response = supabase.table('cart_items')\
-                .update({'quantity': quantity})\
-                .eq('cart_item_id', cart_item_id)\
-                .eq('customer_id', customer_id)\
-                .execute()
-        
-        return jsonify({
-            'success': True,
-            'message': 'Cart updated'
-        }), 200
-        
-    except Exception as e:
-        print(f"Error updating cart: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-
-
-# Remove item from cart
-@cart_bp.route('/remove/<int:cart_item_id>', methods=['DELETE'])
-@verify_token
-@require_role(['customer'])
-def remove_from_cart(cart_item_id):
-    try:
-        supabase = get_authenticated_client()
-        customer_id = request.user_id
-        
-        response = supabase.table('cart_items')\
-            .delete()\
-            .eq('cart_item_id', cart_item_id)\
-            .eq('customer_id', customer_id)\
-            .execute()
-        
-        return jsonify({
-            'success': True,
-            'message': 'Item removed from cart'
-        }), 200
-        
-    except Exception as e:
-        print(f"Error removing from cart: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-
-
-# Clear entire cart
-@cart_bp.route('/clear', methods=['DELETE'])
-@verify_token
-@require_role(['customer'])
-def clear_cart():
-    try:
-        supabase = get_authenticated_client()
-        customer_id = request.user_id
-        
-        response = supabase.table('cart_items')\
-            .delete()\
-            .eq('customer_id', customer_id)\
-            .execute()
-        
-        return jsonify({
-            'success': True,
-            'message': 'Cart cleared'
-        }), 200
-        
-    except Exception as e:
-        print(f"Error clearing cart: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-
-
-# Checkout - Create online order
-@cart_bp.route('/checkout', methods=['POST'])
-@verify_token
-@require_role(['customer'])
-def checkout():
-    try:
-        supabase = get_authenticated_client()
-        customer_id = request.user_id
-        
-        # Get customer profile
-        profile_response = supabase.table('profiles')\
-            .select('*')\
-            .eq('id', customer_id)\
-            .single()\
-            .execute()
-        
-        customer = profile_response.data
-        
-        # Get cart items with product details
-        cart_response = supabase.table('cart_items')\
-            .select('*, products(*)')\
-            .eq('customer_id', customer_id)\
-            .execute()
-        
-        cart_items = cart_response.data
-        
-        if not cart_items:
-            return jsonify({'error': 'Cart is empty'}), 400
-        
-        # Calculate total
-        total_amount = 0
-        sale_items = []
-        
-        for item in cart_items:
-            product = item['products']
-            
-            # Calculate discounted price
-            selling_price = float(product['selling_price'])
-            discount_percent = product.get('festival_discount_percent') or product.get('flash_sale_discount_percent') or 0
-            
-            if discount_percent > 0:
-                unit_price = selling_price * (1 - discount_percent / 100)
-            else:
-                unit_price = selling_price
-            
-            quantity = item['quantity']
-            subtotal = unit_price * quantity
-            total_amount += subtotal
-            
-            sale_items.append({
-                'product_id': product['id'],
-                'quantity': quantity,
-                'unit_price': round(unit_price, 2),
-                'subtotal': round(subtotal, 2)
-            })
-        
-        # Create sale record
-        sale_data = {
-            'sale_type': 'ONLINE',
-            'customer_id': customer_id,
-            'customer_name': customer.get('full_name'),
-            'customer_phone': customer.get('phone'),
-            'total_amount': round(total_amount, 2),
-            'payment_method': 'ONLINE',
-            'order_status': 'paid'
-        }
-        
-        sale_response = supabase.table('sales')\
-            .insert(sale_data)\
-            .execute()
-        
-        sale_id = sale_response.data[0]['sale_id']
-        
-        # Insert sale items
-        for sale_item in sale_items:
-            sale_item['sale_id'] = sale_id
-        
-        supabase.table('sale_items')\
-            .insert(sale_items)\
-            .execute()
-        
-        # Clear cart after successful checkout
-        supabase.table('cart_items')\
-            .delete()\
-            .eq('customer_id', customer_id)\
-            .execute()
-        
-        return jsonify({
-            'success': True,
-            'message': 'Order placed successfully',
-            'sale_id': sale_id,
-            'total_amount': round(total_amount, 2)
-        }), 200
-        
-    except Exception as e:
-        print(f"Error during checkout: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-    
-
-
-
-
-
-
-
-
-
-#from here its there....
-
-
 # Validate Cart - Only validates stock, prices, and discounts (no order creation)
 @cart_bp.route('/validate', methods=['POST'])
 @verify_token
@@ -420,77 +115,108 @@ def validate_cart():
         return jsonify({'error': str(e)}), 500
 
 
-# Confirm Payment - Actually creates the sale and updates stock
+import stripe
+from flask import request, jsonify
+from datetime import datetime
+from config.supabase_config import get_supabase_client_with_token, get_supabase_admin_client
+from utils.discount_calculator import get_discount_for_product
+# from middleware.auth import verify_token, require_role
+
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+stripe.api_key = os.getenv("STRIPE_SECRET_KEY")  # ✅ loads from .env
+
+# ✅ STEP 1: Create Payment Intent (called by Payment.jsx initially)
+@cart_bp.route('/create-payment-intent', methods=['POST'])
+@verify_token
+@require_role(['customer'])
+def create_payment_intent():
+    try:
+        data = request.get_json()
+        total_amount = data.get('total_amount')
+        if not total_amount:
+            return jsonify({"error": "Missing total_amount"}), 400
+
+        intent = stripe.PaymentIntent.create(
+            amount=int(round(total_amount * 100)),
+            currency="usd",
+            automatic_payment_methods={"enabled": True, "allow_redirects": "never"},
+        )
+
+        return jsonify({"clientSecret": intent.client_secret}), 200
+    except Exception as e:
+        print(f"Stripe error: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+
+
+# ✅ STEP 2: Confirm Payment and Create Sale Record (called after frontend succeeds)
 @cart_bp.route('/confirm-payment', methods=['POST'])
 @verify_token
 @require_role(['customer'])
 def confirm_payment():
     try:
-        # Use customer's token for RLS policies
         customer_token = request.access_token
         supabase = get_supabase_client_with_token(customer_token)
         customer_id = request.user_id
         data = request.get_json()
         
         items = data.get('items', [])
-        
+        stripe_payment_id = data.get('stripe_payment_id')
+
         if not items:
             return jsonify({'error': 'No items provided'}), 400
+        if not stripe_payment_id:
+            return jsonify({'error': 'Missing Stripe payment ID'}), 400
         
-        # Get customer profile
-        profile_response = supabase.table('profiles')\
-            .select('*')\
-            .eq('id', customer_id)\
-            .single()\
-            .execute()
-        
+        # ✅ Step 1: Verify payment with Stripe
+        payment_intent = stripe.PaymentIntent.retrieve(stripe_payment_id)
+
+        if payment_intent.status != "succeeded":
+            return jsonify({
+                'error': f"Payment not successful. Current status: {payment_intent.status}"
+            }), 400
+
+        # ✅ Step 2: Fetch customer profile
+        profile_response = supabase.table('profiles').select('*').eq('id', customer_id).single().execute()
         customer = profile_response.data
-        
-        # Re-validate all items before creating order (防止并发问题)
+
+        # ✅ Step 3: Revalidate and compute totals
         validated_items = []
         total_amount = 0
-        
+
         for item in items:
             product_id = item.get('product_id')
             requested_qty = item.get('quantity', 1)
-            
-            # Fetch current product details
-            product_response = supabase.table('products')\
-                .select('*')\
-                .eq('id', product_id)\
-                .single()\
-                .execute()
-            
+
+            product_response = supabase.table('products').select('*').eq('id', product_id).single().execute()
             if not product_response.data:
                 return jsonify({'error': f"Product {product_id} not found"}), 400
-            
+
             product = product_response.data
-            
-            # Final stock check
+
             if product['current_stock'] < requested_qty:
                 return jsonify({
-                    'error': f"{product['product_name']}: Insufficient stock. Only {product['current_stock']} units available"
+                    'error': f"{product['product_name']}: Insufficient stock. Only {product['current_stock']} available"
                 }), 400
-            
-            # Calculate current price with DYNAMIC discounts based on date
-            from utils.discount_calculator import get_discount_for_product
-            
+
             selling_price = float(product['selling_price'])
             category = product.get('category', '')
             festival_discount = product.get('festival_discount_percent', 0) or 0
             flash_sale_discount = product.get('flash_sale_discount_percent', 0) or 0
-            
-            # Get discount only if today matches the discount rules
             active_discount = get_discount_for_product(category, festival_discount, flash_sale_discount)
-            
+
             if active_discount > 0:
                 unit_price = selling_price * (1 - active_discount / 100)
             else:
                 unit_price = selling_price
-            
+
             subtotal = unit_price * requested_qty
             total_amount += subtotal
-            
+
             validated_items.append({
                 'product_id': product['id'],
                 'product_name': product['product_name'],
@@ -498,8 +224,8 @@ def confirm_payment():
                 'unit_price': round(unit_price, 2),
                 'subtotal': round(subtotal, 2)
             })
-        
-        # Create sale record
+
+        # ✅ Step 4: Create sale record
         sale_data = {
             'sale_type': 'ONLINE',
             'customer_id': customer_id,
@@ -507,16 +233,14 @@ def confirm_payment():
             'customer_phone': customer.get('phone'),
             'total_amount': round(total_amount, 2),
             'payment_method': 'ONLINE',
-            'order_status': 'paid'
+            'order_status': 'paid',
+            'stripe_payment_id': stripe_payment_id
         }
-        
-        sale_response = supabase.table('sales')\
-            .insert(sale_data)\
-            .execute()
-        
+
+        sale_response = supabase.table('sales').insert(sale_data).execute()
         sale_id = sale_response.data[0]['sale_id']
-        
-        # Insert sale items
+
+        # ✅ Step 5: Insert sale items
         sale_items = []
         for item in validated_items:
             sale_items.append({
@@ -526,41 +250,26 @@ def confirm_payment():
                 'unit_price': item['unit_price'],
                 'subtotal': item['subtotal']
             })
-        
-        supabase.table('sale_items')\
-            .insert(sale_items)\
-            .execute()
-        
-        # Update product stock using admin client (customers don't have UPDATE permission on products)
-        from config.supabase_config import get_supabase_admin_client
+        supabase.table('sale_items').insert(sale_items).execute()
+
+        # ✅ Step 6: Update stock
         admin_supabase = get_supabase_admin_client()
-        
         for item in validated_items:
-            # Fetch current stock
-            current = admin_supabase.table('products')\
-                .select('current_stock')\
-                .eq('id', item['product_id'])\
-                .single()\
-                .execute()
-            
+            current = admin_supabase.table('products').select('current_stock').eq('id', item['product_id']).single().execute()
             new_stock = current.data['current_stock'] - item['quantity']
-            
-            # Update stock
-            admin_supabase.table('products')\
-                .update({'current_stock': new_stock})\
-                .eq('id', item['product_id'])\
-                .execute()
-        
+            admin_supabase.table('products').update({'current_stock': new_stock}).eq('id', item['product_id']).execute()
+
         return jsonify({
             'success': True,
-            'message': 'Payment successful! Order placed.',
+            'message': 'Payment verified and order created successfully!',
             'sale_id': sale_id,
             'total': round(total_amount, 2),
+            'stripe_payment_id': stripe_payment_id,
             'items_ordered': len(validated_items)
         }), 200
-        
+
     except Exception as e:
-        print(f"Error during payment confirmation: {str(e)}")
+        print(f"Error during confirm_payment: {str(e)}")
         import traceback
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500

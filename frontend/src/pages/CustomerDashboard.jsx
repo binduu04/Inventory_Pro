@@ -1,18 +1,27 @@
-import { useState, useEffect } from 'react';
-import { ShoppingCart, User, Package, LogOut, X, Search, Filter, RocketIcon } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import Cart from '../components/Cart';
-import ProductCard from '../components/ProductCard';
-import Footer from '../components/Footer';
-import ProfileModal from '../components/ProfileModal';
-import CustomAlert from '../components/CustomAlert';
-import CheckoutModal from '../components/CheckoutModal';
+import { useState, useEffect } from "react";
+import {
+  ShoppingCart,
+  User,
+  Package,
+  LogOut,
+  X,
+  Search,
+  Filter,
+  RocketIcon,
+} from "lucide-react";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import Cart from "../components/Cart";
+import ProductCard from "../components/ProductCard";
+import Footer from "../components/Footer";
+import ProfileModal from "../components/ProfileModal";
+import CustomAlert from "../components/CustomAlert";
+import CheckoutModal from "../components/CheckoutModal";
 
 const CustomerDashboard = () => {
   const { user, signOut, session } = useAuth();
   const navigate = useNavigate();
-  
+
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
@@ -23,17 +32,17 @@ const CustomerDashboard = () => {
   const [cartItems, setCartItems] = useState([]);
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [orderHistory, setOrderHistory] = useState([]);
   const [alert, setAlert] = useState({
-  isOpen: false,
-  type: 'success',
-  title: '',
-  message: ''
-});
+    isOpen: false,
+    type: "success",
+    title: "",
+    message: "",
+  });
 
   useEffect(() => {
     fetchProducts();
@@ -45,13 +54,14 @@ const CustomerDashboard = () => {
   useEffect(() => {
     let filtered = products;
     if (searchTerm) {
-      filtered = filtered.filter(p => 
-        p.product_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.category?.toLowerCase().includes(searchTerm.toLowerCase())
+      filtered = filtered.filter(
+        (p) =>
+          p.product_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          p.category?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
-    if (selectedCategory !== 'all') {
-      filtered = filtered.filter(p => p.category === selectedCategory);
+    if (selectedCategory !== "all") {
+      filtered = filtered.filter((p) => p.category === selectedCategory);
     }
     setFilteredProducts(filtered);
   }, [searchTerm, selectedCategory, products]);
@@ -59,17 +69,17 @@ const CustomerDashboard = () => {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/products/', {
-        headers: { 'Authorization': `Bearer ${session?.access_token}` }
+      const response = await fetch("http://localhost:5000/api/products/", {
+        headers: { Authorization: `Bearer ${session?.access_token}` },
       });
       const data = await response.json();
       if (response.ok) {
-        console.log('Fetched products:', data.products);
+        console.log("Fetched products:", data.products);
         setProducts(data.products || []);
         setFilteredProducts(data.products || []);
       }
     } catch (error) {
-      console.error('Error fetching products:', error);
+      console.error("Error fetching products:", error);
     } finally {
       setLoading(false);
     }
@@ -77,35 +87,41 @@ const CustomerDashboard = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/products/categories', {
-        headers: { 'Authorization': `Bearer ${session?.access_token}` }
-      });
+      const response = await fetch(
+        "http://localhost:5000/api/products/categories",
+        {
+          headers: { Authorization: `Bearer ${session?.access_token}` },
+        }
+      );
       const data = await response.json();
       if (response.ok) setCategories(data.categories || []);
     } catch (error) {
-      console.error('Error fetching categories:', error);
+      console.error("Error fetching categories:", error);
     }
   };
 
   const fetchOrderHistory = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/orders/my-orders', {
-        headers: { 'Authorization': `Bearer ${session?.access_token}` }
-      });
+      const response = await fetch(
+        "http://localhost:5000/api/orders/my-orders",
+        {
+          headers: { Authorization: `Bearer ${session?.access_token}` },
+        }
+      );
       const data = await response.json();
       if (response.ok) {
         // Pass orders with original status values - ProfileModal will format them
-        const formattedOrders = data.orders.map(order => ({
+        const formattedOrders = data.orders.map((order) => ({
           id: order.id,
           date: order.date,
           items: order.items,
           total: order.total,
-          status: order.status // Keep original DB status value
+          status: order.status, // Keep original DB status value
         }));
         setOrderHistory(formattedOrders);
       }
     } catch (error) {
-      console.error('Error fetching order history:', error);
+      console.error("Error fetching order history:", error);
     }
   };
 
@@ -123,122 +139,127 @@ const CustomerDashboard = () => {
   const getUserInitial = () => {
     if (user?.full_name) return user.full_name.charAt(0).toUpperCase();
     if (user?.email) return user.email.charAt(0).toUpperCase();
-    return 'U';
+    return "U";
   };
 
   const handleLogout = async () => {
     await signOut();
-    navigate('/login');
+    navigate("/login");
   };
 
-const handleUpdateUser = async (updatedUser) => {
-  try {
-    const response = await fetch('http://localhost:5000/api/customer/profile', {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${session?.access_token}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        full_name: updatedUser.full_name,
-        phone: updatedUser.phone
-      })
-    });
+  const handleUpdateUser = async (updatedUser) => {
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/customer/profile",
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${session?.access_token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            full_name: updatedUser.full_name,
+            phone: updatedUser.phone,
+          }),
+        }
+      );
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (response.ok) {
+      if (response.ok) {
+        setAlert({
+          isOpen: true,
+          type: "success",
+          title: "Success!",
+          message: "Profile updated successfully",
+        });
+        // Refresh after a delay
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      } else {
+        setAlert({
+          isOpen: true,
+          type: "error",
+          title: "Error",
+          message: data.error || "Failed to update profile",
+        });
+      }
+    } catch (error) {
       setAlert({
         isOpen: true,
-        type: 'success',
-        title: 'Success!',
-        message: 'Profile updated successfully'
-      });
-      // Refresh after a delay
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
-    } else {
-      setAlert({
-        isOpen: true,
-        type: 'error',
-        title: 'Error',
-        message: data.error || 'Failed to update profile'
+        type: "error",
+        title: "Error",
+        message: "Failed to update profile. Please try again.",
       });
     }
-  } catch (error) {
-    setAlert({
-      isOpen: true,
-      type: 'error',
-      title: 'Error',
-      message: 'Failed to update profile. Please try again.'
-    });
-  }
-};
+  };
   const addToCart = (product) => {
     // Check if out of stock
     if (product.current_stock === 0) {
       setAlert({
         isOpen: true,
-        type: 'error',
-        title: 'Out of Stock',
-        message: `${product.product_name} is currently out of stock`
+        type: "error",
+        title: "Out of Stock",
+        message: `${product.product_name} is currently out of stock`,
       });
       return;
     }
 
-    const existingItem = cartItems.find(item => item.id === product.id);
+    const existingItem = cartItems.find((item) => item.id === product.id);
     let updatedCart;
-    
+
     if (existingItem) {
       // Check if adding more would exceed stock
       if (existingItem.quantity + 1 > product.current_stock) {
         setAlert({
           isOpen: true,
-          type: 'error',
-          title: 'Stock Limit Reached',
-          message: `Only ${product.current_stock} units available`
+          type: "error",
+          title: "Stock Limit Reached",
+          message: `Only ${product.current_stock} units available`,
         });
         return;
       }
-      updatedCart = cartItems.map(item =>
+      updatedCart = cartItems.map((item) =>
         item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
       );
     } else {
       updatedCart = [...cartItems, { ...product, quantity: 1 }];
     }
-    
+
     setCartItems(updatedCart);
     saveCartToStorage(updatedCart);
   };
 
   const updateQuantity = (productId, change) => {
-    const updatedCart = cartItems.map(item => {
-      if (item.id === productId) {
-        const newQuantity = item.quantity + change;
-        
-        // Check stock limit when increasing
-        if (change > 0 && newQuantity > item.current_stock) {
-          setAlert({
-            isOpen: true,
-            type: 'error',
-            title: 'Stock Limit',
-            message: `Only ${item.current_stock} units available`
-          });
-          return item;
+    const updatedCart = cartItems
+      .map((item) => {
+        if (item.id === productId) {
+          const newQuantity = item.quantity + change;
+
+          // Check stock limit when increasing
+          if (change > 0 && newQuantity > item.current_stock) {
+            setAlert({
+              isOpen: true,
+              type: "error",
+              title: "Stock Limit",
+              message: `Only ${item.current_stock} units available`,
+            });
+            return item;
+          }
+
+          return newQuantity > 0 ? { ...item, quantity: newQuantity } : item;
         }
-        
-        return newQuantity > 0 ? { ...item, quantity: newQuantity } : item;
-      }
-      return item;
-    }).filter(item => item.quantity > 0);
-    
+        return item;
+      })
+      .filter((item) => item.quantity > 0);
+
     setCartItems(updatedCart);
     saveCartToStorage(updatedCart);
   };
 
   const removeFromCart = (productId) => {
-    const updatedCart = cartItems.filter(item => item.id !== productId);
+    const updatedCart = cartItems.filter((item) => item.id !== productId);
     setCartItems(updatedCart);
     saveCartToStorage(updatedCart);
   };
@@ -252,31 +273,31 @@ const handleUpdateUser = async (updatedUser) => {
     if (cartItems.length === 0) {
       setAlert({
         isOpen: true,
-        type: 'error',
-        title: 'Cart Empty',
-        message: 'Please add items to your cart before checkout'
+        type: "error",
+        title: "Cart Empty",
+        message: "Please add items to your cart before checkout",
       });
       return;
     }
 
     setIsValidatingCheckout(true);
-    
+
     try {
       // Send cart items with product IDs and quantities for server-side validation
-      const checkoutItems = cartItems.map(item => ({
+      const checkoutItems = cartItems.map((item) => ({
         product_id: item.id,
-        quantity: item.quantity
+        quantity: item.quantity,
       }));
 
-      const response = await fetch('http://localhost:5000/api/cart/validate', {
-        method: 'POST',
+      const response = await fetch("http://localhost:5000/api/cart/validate", {
+        method: "POST",
         headers: {
-          'Authorization': `Bearer ${session?.access_token}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${session?.access_token}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          items: checkoutItems
-        })
+          items: checkoutItems,
+        }),
       });
 
       const data = await response.json();
@@ -284,14 +305,13 @@ const handleUpdateUser = async (updatedUser) => {
       // Show checkout modal with validation results
       setCheckoutValidation(data);
       setShowCheckoutModal(true);
-      
     } catch (error) {
-      console.error('Error during checkout:', error);
+      console.error("Error during checkout:", error);
       setAlert({
         isOpen: true,
-        type: 'error',
-        title: 'Error',
-        message: 'Something went wrong. Please try again.'
+        type: "error",
+        title: "Error",
+        message: "Something went wrong. Please try again.",
       });
     } finally {
       setIsValidatingCheckout(false);
@@ -305,24 +325,27 @@ const handleUpdateUser = async (updatedUser) => {
 
   const handleProceedPayment = async () => {
     setIsProcessingPayment(true);
-    
+
     try {
       // Prepare items for payment confirmation
-      const paymentItems = checkoutValidation.validItems.map(item => ({
+      const paymentItems = checkoutValidation.validItems.map((item) => ({
         product_id: item.product_id,
-        quantity: item.quantity
+        quantity: item.quantity,
       }));
 
-      const response = await fetch('http://localhost:5000/api/cart/confirm-payment', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${session?.access_token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          items: paymentItems
-        })
-      });
+      const response = await fetch(
+        "http://localhost:5000/api/cart/confirm-payment",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${session?.access_token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            items: paymentItems,
+          }),
+        }
+      );
 
       const data = await response.json();
 
@@ -330,37 +353,37 @@ const handleUpdateUser = async (updatedUser) => {
         setIsProcessingPayment(false);
         setShowCheckoutModal(false);
         setShowCart(false);
-        
+
         setAlert({
           isOpen: true,
-          type: 'success',
-          title: 'Payment Successful! 🎉',
-          message: `Your order has been placed successfully. Order ID: ${data.sale_id}`
+          type: "success",
+          title: "Payment Successful! 🎉",
+          message: `Your order has been placed successfully. Order ID: ${data.sale_id}`,
         });
-        
+
         // Clear cart from localStorage
         setCartItems([]);
         saveCartToStorage([]);
-        
+
         // Refresh order history
         fetchOrderHistory();
       } else {
         setIsProcessingPayment(false);
         setAlert({
           isOpen: true,
-          type: 'error',
-          title: 'Payment Failed',
-          message: data.error || 'Failed to process payment. Please try again.'
+          type: "error",
+          title: "Payment Failed",
+          message: data.error || "Failed to process payment. Please try again.",
         });
       }
     } catch (error) {
-      console.error('Error during payment:', error);
+      console.error("Error during payment:", error);
       setIsProcessingPayment(false);
       setAlert({
         isOpen: true,
-        type: 'error',
-        title: 'Error',
-        message: 'Something went wrong during payment. Please try again.'
+        type: "error",
+        title: "Error",
+        message: "Something went wrong during payment. Please try again.",
       });
     }
   };
@@ -405,16 +428,23 @@ const handleUpdateUser = async (updatedUser) => {
 
                 {showProfileMenu && (
                   <>
-                    <div className="fixed inset-0 z-30" onClick={() => setShowProfileMenu(false)}></div>
+                    <div
+                      className="fixed inset-0 z-30"
+                      onClick={() => setShowProfileMenu(false)}
+                    ></div>
                     <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 py-1 z-40">
                       <div className="px-4 py-3 border-b border-gray-100">
-                        <p className="font-semibold text-gray-900 text-sm truncate">{user?.full_name || 'User'}</p>
-                        <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+                        <p className="font-semibold text-gray-900 text-sm truncate">
+                          {user?.full_name || "User"}
+                        </p>
+                        <p className="text-xs text-gray-500 truncate">
+                          {user?.email}
+                        </p>
                       </div>
                       <button
-                        onClick={() => { 
-                          setShowProfileModal(true); 
-                          setShowProfileMenu(false); 
+                        onClick={() => {
+                          setShowProfileModal(true);
+                          setShowProfileMenu(false);
                         }}
                         className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-emerald-50 flex items-center space-x-2 transition-colors"
                       >
@@ -422,7 +452,7 @@ const handleUpdateUser = async (updatedUser) => {
                         <span>My Account</span>
                       </button>
                       <div className="border-t border-gray-100 mt-1">
-                        <button 
+                        <button
                           onClick={handleLogout}
                           className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center space-x-2 transition-colors"
                         >
@@ -443,7 +473,7 @@ const handleUpdateUser = async (updatedUser) => {
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-1">
-            Welcome back, {user?.full_name?.split(' ')[0] || 'Customer'}! 👋
+            Welcome back, {user?.full_name?.split(" ")[0] || "Customer"}! 👋
           </h2>
           <p className="text-sm text-gray-600">Discover our products</p>
         </div>
@@ -469,8 +499,10 @@ const handleUpdateUser = async (updatedUser) => {
                 className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm bg-white cursor-pointer"
               >
                 <option value="all">All Categories</option>
-                {categories.map(cat => (
-                  <option key={cat} value={cat}>{cat}</option>
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
                 ))}
               </select>
             </div>
@@ -479,15 +511,19 @@ const handleUpdateUser = async (updatedUser) => {
 
         {/* Products Grid */}
         {loading ? (
-          <div className="text-center py-12 text-gray-500">Loading products...</div>
+          <div className="text-center py-12 text-gray-500">
+            Loading products...
+          </div>
         ) : filteredProducts.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">No products found</div>
+          <div className="text-center py-12 text-gray-500">
+            No products found
+          </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {filteredProducts.map((product) => {
-              const cartItem = cartItems.find(item => item.id === product.id);
+              const cartItem = cartItems.find((item) => item.id === product.id);
               const quantityInCart = cartItem ? cartItem.quantity : 0;
-              
+
               return (
                 <ProductCard
                   key={product.id}
@@ -536,6 +572,7 @@ const handleUpdateUser = async (updatedUser) => {
           onFixCart={handleFixCart}
           onProceedPayment={handleProceedPayment}
           isProcessing={isProcessingPayment}
+          session={session} // ✅ Add this line
         />
       )}
 

@@ -380,7 +380,7 @@ def get_sales_by_biller():
         response = (
             supabase.table('sales')
             .select('*')
-            .eq('created_by_biller_id', request.user_id)
+            .eq('completed_by_biller_id', request.user_id)
             .order('sale_date', desc=True)
             .execute()
         )
