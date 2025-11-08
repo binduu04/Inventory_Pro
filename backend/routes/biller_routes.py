@@ -24,8 +24,10 @@ def check_auth():
 @verify_token
 @require_role(['biller', 'manager'])
 def get_products_for_billing():
-    """Get all products for biller to create orders"""
+    """Get all products for biller to create orders with dynamic discounts"""
     try:
+        from utils.discount_calculator import get_discount_for_product
+        
         supabase = get_authenticated_client()
         
         # Get category filter from query params
@@ -45,22 +47,24 @@ def get_products_for_billing():
         
         response = query.order('product_name').execute()
         
-        # Calculate effective discount and final price for each product
+        # Calculate effective discount and final price for each product using DYNAMIC logic
         products = []
         for product in response.data:
+            product_category = product.get('category', '')
             festival_discount = product.get('festival_discount_percent') or 0
             flash_discount = product.get('flash_sale_discount_percent') or 0
             
-            # Use the higher discount
-            discount_percent = max(festival_discount, flash_discount)
+            # Get active discount based on current date and discount rules
+            active_discount = get_discount_for_product(product_category, festival_discount, flash_discount)
             
             selling_price = product['selling_price']
-            discount_amount = (selling_price * discount_percent) / 100
+            discount_amount = (selling_price * active_discount) / 100
             final_price = selling_price - discount_amount
             
             products.append({
                 **product,
-                'discount_percent': discount_percent,
+                'active_discount': active_discount,
+                'discount_percent': active_discount,  # For backward compatibility
                 'discount_amount': discount_amount,
                 'final_price': final_price
             })

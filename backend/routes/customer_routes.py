@@ -12,6 +12,8 @@ def get_customer_products():
     Excludes admin-specific fields like cost_price, created_by, etc.
     """
     try:
+        from utils.discount_calculator import apply_discount_to_products
+        
         supabase = get_authenticated_client()
         
         # Build query - select only customer-relevant fields
@@ -38,9 +40,12 @@ def get_customer_products():
         # Execute query
         response = query.order('created_at', desc=True).execute()
         
+        # Apply dynamic discounts based on current date
+        products_with_discounts = apply_discount_to_products(response.data)
+        
         return jsonify({
-            'products': response.data,
-            'count': len(response.data)
+            'products': products_with_discounts,
+            'count': len(products_with_discounts)
         }), 200
         
     except Exception as e:
@@ -53,6 +58,8 @@ def get_customer_products():
 def get_customer_product_detail(product_id):
     """Get detailed view of a single product for customer"""
     try:
+        from utils.discount_calculator import apply_discount_to_products
+        
         supabase = get_authenticated_client()
         response = supabase.table('products').select(
             'id, product_name, category, season_affinity, selling_price, '
@@ -61,7 +68,9 @@ def get_customer_product_detail(product_id):
         ).eq('id', product_id).execute()
         
         if response.data and len(response.data) > 0:
-            return jsonify({'product': response.data[0]}), 200
+            # Apply dynamic discount
+            product_with_discount = apply_discount_to_products(response.data)[0]
+            return jsonify({'product': product_with_discount}), 200
         else:
             return jsonify({'error': 'Product not found'}), 404
             

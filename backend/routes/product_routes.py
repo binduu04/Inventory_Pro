@@ -457,8 +457,10 @@ def add_product():
 @product_bp.route('/', methods=['GET'])
 @verify_token
 def get_products():
-    """Get all products with optional filters"""
+    """Get all products with optional filters and dynamic discounts"""
     try:
+        from utils.discount_calculator import apply_discount_to_products
+        
         supabase = get_authenticated_client()
         
         # Build query
@@ -480,9 +482,12 @@ def get_products():
         # Execute query
         response = query.order('created_at', desc=True).execute()
         
+        # Apply dynamic discounts based on current date
+        products_with_discounts = apply_discount_to_products(response.data)
+        
         return jsonify({
-            'products': response.data,
-            'count': len(response.data)
+            'products': products_with_discounts,
+            'count': len(products_with_discounts)
         }), 200
         
     except Exception as e:

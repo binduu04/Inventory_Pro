@@ -361,12 +361,19 @@ def validate_cart():
                 # Don't add to valid items if quantity exceeds stock
                 continue
             
-            # Calculate current price with active discounts
-            selling_price = float(product['selling_price'])
-            discount_percent = product.get('festival_discount_percent') or product.get('flash_sale_discount_percent') or 0
+            # Calculate current price with DYNAMIC discounts based on date
+            from utils.discount_calculator import get_discount_for_product
             
-            if discount_percent > 0:
-                unit_price = selling_price * (1 - discount_percent / 100)
+            selling_price = float(product['selling_price'])
+            category = product.get('category', '')
+            festival_discount = product.get('festival_discount_percent', 0) or 0
+            flash_sale_discount = product.get('flash_sale_discount_percent', 0) or 0
+            
+            # Get discount only if today matches the discount rules
+            active_discount = get_discount_for_product(category, festival_discount, flash_sale_discount)
+            
+            if active_discount > 0:
+                unit_price = selling_price * (1 - active_discount / 100)
             else:
                 unit_price = selling_price
             
@@ -379,7 +386,7 @@ def validate_cart():
                 'quantity': requested_qty,
                 'unit_price': round(unit_price, 2),
                 'subtotal': round(subtotal, 2),
-                'discount_percent': discount_percent
+                'discount_percent': active_discount
             })
         
         # If there are validation errors, return them with valid items
@@ -465,12 +472,19 @@ def confirm_payment():
                     'error': f"{product['product_name']}: Insufficient stock. Only {product['current_stock']} units available"
                 }), 400
             
-            # Calculate current price with active discounts
-            selling_price = float(product['selling_price'])
-            discount_percent = product.get('festival_discount_percent') or product.get('flash_sale_discount_percent') or 0
+            # Calculate current price with DYNAMIC discounts based on date
+            from utils.discount_calculator import get_discount_for_product
             
-            if discount_percent > 0:
-                unit_price = selling_price * (1 - discount_percent / 100)
+            selling_price = float(product['selling_price'])
+            category = product.get('category', '')
+            festival_discount = product.get('festival_discount_percent', 0) or 0
+            flash_sale_discount = product.get('flash_sale_discount_percent', 0) or 0
+            
+            # Get discount only if today matches the discount rules
+            active_discount = get_discount_for_product(category, festival_discount, flash_sale_discount)
+            
+            if active_discount > 0:
+                unit_price = selling_price * (1 - active_discount / 100)
             else:
                 unit_price = selling_price
             

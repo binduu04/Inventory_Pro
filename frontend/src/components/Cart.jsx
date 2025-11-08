@@ -3,9 +3,10 @@ import { ShoppingCart, X, Plus, Minus } from 'lucide-react';
 const Cart = ({ isOpen, onClose, cartItems, onUpdateQuantity, onRemoveItem,calculateDiscountedPrice,session,onCheckout,isValidating}) => {
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const cartTotal = cartItems.reduce((sum, item) => {
+    // Use active_discount from backend (dynamic discount based on current date)
     const price = calculateDiscountedPrice(
       item.selling_price, 
-      item.festival_discount_percent || item.flash_sale_discount_percent || 0
+      item.active_discount || 0
     );
     return sum + (price * item.quantity);
   }, 0);
@@ -44,7 +45,8 @@ const Cart = ({ isOpen, onClose, cartItems, onUpdateQuantity, onRemoveItem,calcu
           ) : (
             <div className="space-y-4">
               {cartItems.map((item) => {
-                const discountPercent = item.festival_discount_percent || item.flash_sale_discount_percent || 0;
+                // Use active_discount from backend (dynamic discount based on current date)
+                const discountPercent = item.active_discount || 0;
                 const itemPrice = calculateDiscountedPrice(item.selling_price, discountPercent);
                 const hasDiscount = discountPercent > 0;
                 

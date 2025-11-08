@@ -1,7 +1,8 @@
 import { Plus, Minus } from 'lucide-react';
 
 const ProductCard = ({ product, quantityInCart, onAddToCart, onUpdateQuantity }) => {
-  const discountPercent = product.festival_discount_percent || product.flash_sale_discount_percent || 0;
+  // Use active_discount from backend (which applies discounts based on current date)
+  const discountPercent = product.active_discount || 0;
   const hasDiscount = discountPercent > 0;
   const discountedPrice = hasDiscount 
     ? product.selling_price * (1 - discountPercent / 100) 
