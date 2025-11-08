@@ -11,6 +11,8 @@ from routes.supplier_routes import supplier_bp
 from routes.biller_routes import biller_bp
 from routes.product_routes import product_bp
 from routes.customer_routes import customer_bp
+from routes.cart_routes import cart_bp
+from routes.order_routes import order_bp
 
 def create_app():
     app = Flask(__name__)
@@ -29,6 +31,8 @@ def create_app():
     app.register_blueprint(biller_bp)
     app.register_blueprint(product_bp)
     app.register_blueprint(customer_bp)
+    app.register_blueprint(cart_bp, url_prefix='/api/cart')
+    app.register_blueprint(order_bp, url_prefix='/api/orders')
     
     # Health check endpoint
     @app.route('/health', methods=['GET'])

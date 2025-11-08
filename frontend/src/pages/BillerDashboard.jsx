@@ -4,6 +4,7 @@ import {ShoppingCart,Package,FileText,LogOut,Plus,Minus,Trash2,Search,X,Menu,Fil
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import BillerBillingHistory from "../components/BillerBillingHistory";
+import OnlineOrdersManagement from "../components/OnlineOrdersManagement";
 
 const BillerDashboard = () => {
   const { user, signOut, session } = useAuth();
@@ -23,6 +24,7 @@ const BillerDashboard = () => {
   const [isGeneratingBill, setIsGeneratingBill] = useState(false);
   const [showBillModal, setShowBillModal] = useState(false);
   const [generatedBill, setGeneratedBill] = useState(null);
+  const [pendingOrdersCount, setPendingOrdersCount] = useState(0);
 
   // Load cart from localStorage on mount
   useEffect(() => {
@@ -31,6 +33,32 @@ const BillerDashboard = () => {
       setCart(JSON.parse(savedCart));
     }
   }, [user]);
+
+  // Fetch pending orders count
+  useEffect(() => {
+    if (session?.access_token) {
+      fetchPendingOrdersCount();
+      // Poll every 30 seconds for new orders
+      const interval = setInterval(fetchPendingOrdersCount, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [session]);
+
+  const fetchPendingOrdersCount = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/orders/pending-orders', {
+        headers: {
+          'Authorization': `Bearer ${session?.access_token}`
+        }
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setPendingOrdersCount(data.orders?.length || 0);
+      }
+    } catch (error) {
+      console.error('Error fetching pending orders count:', error);
+    }
+  };
 
   // Save cart to localStorage whenever it changes
   useEffect(() => {
@@ -263,7 +291,7 @@ const BillerDashboard = () => {
 
     const billContent = `
 ========================================
-        KIRANA STORE
+          QUICK MART
 ========================================
 Address: 123 Main Street, City
 Phone: +91 9876543210
@@ -346,9 +374,19 @@ Payment Method: ${generatedBill.payment_method}
             }`}
             title="Approve Online Orders"
           >
-            <Package size={20} />
+            <div className="relative">
+              <Package size={20} />
+              {pendingOrdersCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-3 h-3 bg-orange-500 rounded-full border-2 border-white animate-pulse"></span>
+              )}
+            </div>
             <span className={`${sidebarOpen ? "block" : "hidden"}`}>
               Approve Orders
+              {pendingOrdersCount > 0 && (
+                <span className="ml-2 px-2 py-0.5 bg-orange-500 text-white text-xs rounded-full">
+                  {pendingOrdersCount}
+                </span>
+              )}
             </span>
           </button>
 
@@ -424,16 +462,11 @@ Payment Method: ${generatedBill.payment_method}
         {/* Content Area */}
         <main className="flex-1 overflow-hidden">
           {activeTab === "approve-orders" && (
-            <div className="h-full flex items-center justify-center bg-gray-50">
-              <div className="text-center">
-                <Package size={80} className="mx-auto text-gray-300 mb-4" />
-                <h2 className="text-3xl font-bold text-gray-700 mb-2">
-                  Coming Soon
-                </h2>
-                <p className="text-gray-500">
-                  Online order approval feature will be available soon
-                </p>
-              </div>
+            <div className="h-full overflow-auto bg-gray-50">
+              <OnlineOrdersManagement 
+                session={session} 
+                onOrdersChange={(count) => setPendingOrdersCount(count)}
+              />
             </div>
           )}
 
@@ -782,7 +815,7 @@ Payment Method: ${generatedBill.payment_method}
               <div className="mb-8">
                 <div className="flex items-start justify-between mb-6">
                   <div>
-                    <h1 className="text-3xl font-bold text-gray-900 mb-2">KIRANA STORE</h1>
+                    <h1 className="text-3xl font-bold text-gray-900 mb-2">QUICK MART</h1>
                     <p className="text-sm text-gray-600">Shop No. 12, Gandhi Market</p>
                     <p className="text-sm text-gray-600">MG Road, Bangalore - 560001</p>
                     <p className="text-sm text-gray-600">+91 98765 43210</p>

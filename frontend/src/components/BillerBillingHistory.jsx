@@ -237,8 +237,8 @@ const BillerBillingHistory = ({ session }) => {
               className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:border-orange-300 hover:shadow-sm transition-all"
             >
               {/* Main Sale Row */}
-              <div className="p-5">
-                <div className="flex items-center gap-6">
+              <div className="p-4">
+                <div className="flex items-center gap-4 justify-between">
                   {/* Invoice Number */}
                   <div className="w-28">
                     <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Invoice</p>
@@ -279,7 +279,7 @@ const BillerBillingHistory = ({ session }) => {
                   >
                     <div className="text-right">
                       <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-0.5">Total</p>
-                      <p className="text-xl font-bold text-orange-600">₹{sale.total_amount.toFixed(2)}</p>
+                      <p className="text-l font-bold text-orange-600">₹{sale.total_amount.toFixed(2)}</p>
                     </div>
                     <div className="text-gray-400 group-hover:text-gray-600 transition-colors">
                       {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
@@ -310,7 +310,7 @@ const BillerBillingHistory = ({ session }) => {
                         {items.map((item, index) => (
                           <div
                             key={index}
-                            className="grid grid-cols-12 gap-4 px-4 py-3 bg-white hover:bg-orange-50/50 rounded-lg border border-gray-100 transition-colors"
+                            className="grid grid-cols-12 gap-4 px-4 py-3 bg-white rounded-lg border border-gray-100 transition-colors"
                           >
                             <div className="col-span-5">
                               <p className="text-sm font-medium text-gray-900">{item.product_name}</p>

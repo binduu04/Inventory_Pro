@@ -39,6 +39,30 @@ const ProfileModal = ({ isOpen, onClose, user, onUpdateUser, orders }) => {
     }
   };
 
+  // Format status for display
+  const formatStatus = (status) => {
+    const statusMap = {
+      'paid': 'Paid',
+      'packed_and_ready_for_pickup': 'Ready for Pickup',
+      'completed': 'Completed'
+    };
+    return statusMap[status] || status;
+  };
+
+  // Get status badge color
+  const getStatusColor = (status) => {
+    switch(status) {
+      case 'paid':
+        return 'bg-blue-100 text-blue-700';
+      case 'packed_and_ready_for_pickup':
+        return 'bg-purple-100 text-purple-700';
+      case 'completed':
+        return 'bg-green-100 text-green-700';
+      default:
+        return 'bg-gray-100 text-gray-700';
+    }
+  };
+
   return (
     <>
       {/* Backdrop */}
@@ -184,13 +208,9 @@ const ProfileModal = ({ isOpen, onClose, user, onUpdateUser, orders }) => {
                         </p>
                       </div>
                       <span 
-                        className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          order.status === 'Delivered' 
-                            ? 'bg-green-100 text-green-700' 
-                            : 'bg-blue-100 text-blue-700'
-                        }`}
+                        className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(order.status)}`}
                       >
-                        {order.status}
+                        {formatStatus(order.status)}
                       </span>
                     </div>
                     <div className="flex justify-between text-sm">

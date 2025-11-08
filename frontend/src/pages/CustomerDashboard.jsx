@@ -6,7 +6,8 @@ import Cart from '../components/Cart';
 import ProductCard from '../components/ProductCard';
 import Footer from '../components/Footer';
 import ProfileModal from '../components/ProfileModal';
-import  CustomAlert from '../components/CustomAlert';
+import CustomAlert from '../components/CustomAlert';
+import CheckoutModal from '../components/CheckoutModal';
 
 const CustomerDashboard = () => {
   const { user, signOut, session } = useAuth();
@@ -15,6 +16,10 @@ const CustomerDashboard = () => {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showCheckoutModal, setShowCheckoutModal] = useState(false);
+  const [checkoutValidation, setCheckoutValidation] = useState(null);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [isValidatingCheckout, setIsValidatingCheckout] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -22,6 +27,7 @@ const CustomerDashboard = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [orderHistory, setOrderHistory] = useState([]);
   const [alert, setAlert] = useState({
   isOpen: false,
   type: 'success',
@@ -29,16 +35,11 @@ const CustomerDashboard = () => {
   message: ''
 });
 
-  const orderHistory = [
-    { id: 'ORD-001', date: '2025-10-25', items: 3, total: 89.97, status: 'Delivered' },
-    { id: 'ORD-002', date: '2025-10-20', items: 2, total: 56.98, status: 'Delivered' },
-    { id: 'ORD-003', date: '2025-10-15', items: 1, total: 24.99, status: 'In Transit' },
-  { id: 'ORD-004', date: '2025-10-15', items: 1, total: 24.99, status: 'In Transit' }, { id: 'ORD-005', date: '2025-10-15', items: 1, total: 24.99, status: 'In Transit' }, { id: 'ORD-006', date: '2025-10-15', items: 1, total: 24.99, status: 'In Transit' }];
-
   useEffect(() => {
     fetchProducts();
     fetchCategories();
     loadCartFromStorage();
+    fetchOrderHistory();
   }, []);
 
   useEffect(() => {
@@ -86,9 +87,33 @@ const CustomerDashboard = () => {
     }
   };
 
+  const fetchOrderHistory = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/orders/my-orders', {
+        headers: { 'Authorization': `Bearer ${session?.access_token}` }
+      });
+      const data = await response.json();
+      if (response.ok) {
+        // Pass orders with original status values - ProfileModal will format them
+        const formattedOrders = data.orders.map(order => ({
+          id: order.id,
+          date: order.date,
+          items: order.items,
+          total: order.total,
+          status: order.status // Keep original DB status value
+        }));
+        setOrderHistory(formattedOrders);
+      }
+    } catch (error) {
+      console.error('Error fetching order history:', error);
+    }
+  };
+
   const loadCartFromStorage = () => {
     const savedCart = localStorage.getItem(`cart_${user?.id}`);
-    if (savedCart) setCartItems(JSON.parse(savedCart));
+    if (savedCart) {
+      setCartItems(JSON.parse(savedCart));
+    }
   };
 
   const saveCartToStorage = (updatedCart) => {
@@ -151,15 +176,38 @@ const handleUpdateUser = async (updatedUser) => {
   }
 };
   const addToCart = (product) => {
+    // Check if out of stock
+    if (product.current_stock === 0) {
+      setAlert({
+        isOpen: true,
+        type: 'error',
+        title: 'Out of Stock',
+        message: `${product.product_name} is currently out of stock`
+      });
+      return;
+    }
+
     const existingItem = cartItems.find(item => item.id === product.id);
     let updatedCart;
+    
     if (existingItem) {
+      // Check if adding more would exceed stock
+      if (existingItem.quantity + 1 > product.current_stock) {
+        setAlert({
+          isOpen: true,
+          type: 'error',
+          title: 'Stock Limit Reached',
+          message: `Only ${product.current_stock} units available`
+        });
+        return;
+      }
       updatedCart = cartItems.map(item =>
         item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
       );
     } else {
       updatedCart = [...cartItems, { ...product, quantity: 1 }];
     }
+    
     setCartItems(updatedCart);
     saveCartToStorage(updatedCart);
   };
@@ -168,10 +216,23 @@ const handleUpdateUser = async (updatedUser) => {
     const updatedCart = cartItems.map(item => {
       if (item.id === productId) {
         const newQuantity = item.quantity + change;
+        
+        // Check stock limit when increasing
+        if (change > 0 && newQuantity > item.current_stock) {
+          setAlert({
+            isOpen: true,
+            type: 'error',
+            title: 'Stock Limit',
+            message: `Only ${item.current_stock} units available`
+          });
+          return item;
+        }
+        
         return newQuantity > 0 ? { ...item, quantity: newQuantity } : item;
       }
       return item;
     }).filter(item => item.quantity > 0);
+    
     setCartItems(updatedCart);
     saveCartToStorage(updatedCart);
   };
@@ -185,6 +246,123 @@ const handleUpdateUser = async (updatedUser) => {
   const calculateDiscountedPrice = (price, discountPercentage) => {
     if (!discountPercentage || discountPercentage <= 0) return price;
     return price * (1 - discountPercentage / 100);
+  };
+
+  const handleCheckout = async () => {
+    if (cartItems.length === 0) {
+      setAlert({
+        isOpen: true,
+        type: 'error',
+        title: 'Cart Empty',
+        message: 'Please add items to your cart before checkout'
+      });
+      return;
+    }
+
+    setIsValidatingCheckout(true);
+    
+    try {
+      // Send cart items with product IDs and quantities for server-side validation
+      const checkoutItems = cartItems.map(item => ({
+        product_id: item.id,
+        quantity: item.quantity
+      }));
+
+      const response = await fetch('http://localhost:5000/api/cart/validate', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session?.access_token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          items: checkoutItems
+        })
+      });
+
+      const data = await response.json();
+
+      // Show checkout modal with validation results
+      setCheckoutValidation(data);
+      setShowCheckoutModal(true);
+      
+    } catch (error) {
+      console.error('Error during checkout:', error);
+      setAlert({
+        isOpen: true,
+        type: 'error',
+        title: 'Error',
+        message: 'Something went wrong. Please try again.'
+      });
+    } finally {
+      setIsValidatingCheckout(false);
+    }
+  };
+
+  const handleFixCart = () => {
+    setShowCheckoutModal(false);
+    // Cart modal is still open, user can fix items
+  };
+
+  const handleProceedPayment = async () => {
+    setIsProcessingPayment(true);
+    
+    try {
+      // Prepare items for payment confirmation
+      const paymentItems = checkoutValidation.validItems.map(item => ({
+        product_id: item.product_id,
+        quantity: item.quantity
+      }));
+
+      const response = await fetch('http://localhost:5000/api/cart/confirm-payment', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session?.access_token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          items: paymentItems
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setIsProcessingPayment(false);
+        setShowCheckoutModal(false);
+        setShowCart(false);
+        
+        setAlert({
+          isOpen: true,
+          type: 'success',
+          title: 'Payment Successful! 🎉',
+          message: `Your order has been placed successfully. Order ID: ${data.sale_id}`
+        });
+        
+        // Clear cart from localStorage
+        setCartItems([]);
+        saveCartToStorage([]);
+        
+        // Refresh order history
+        fetchOrderHistory();
+      } else {
+        setIsProcessingPayment(false);
+        setAlert({
+          isOpen: true,
+          type: 'error',
+          title: 'Payment Failed',
+          message: data.error || 'Failed to process payment. Please try again.'
+        });
+      }
+    } catch (error) {
+      console.error('Error during payment:', error);
+      setIsProcessingPayment(false);
+      setAlert({
+        isOpen: true,
+        type: 'error',
+        title: 'Error',
+        message: 'Something went wrong during payment. Please try again.'
+      });
+    }
   };
 
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
@@ -335,6 +513,9 @@ const handleUpdateUser = async (updatedUser) => {
         onUpdateQuantity={updateQuantity}
         onRemoveItem={removeFromCart}
         calculateDiscountedPrice={calculateDiscountedPrice}
+        session={session}
+        onCheckout={handleCheckout}
+        isValidating={isValidatingCheckout}
       />
 
       {/* Profile Modal */}
@@ -346,14 +527,26 @@ const handleUpdateUser = async (updatedUser) => {
         orders={orderHistory}
       />
 
+      {/* Checkout Validation Modal */}
+      {checkoutValidation && (
+        <CheckoutModal
+          isOpen={showCheckoutModal}
+          onClose={() => setShowCheckoutModal(false)}
+          validationResult={checkoutValidation}
+          onFixCart={handleFixCart}
+          onProceedPayment={handleProceedPayment}
+          isProcessing={isProcessingPayment}
+        />
+      )}
+
       {/* Custom Alert */}
-<CustomAlert
-  isOpen={alert.isOpen}
-  onClose={() => setAlert({ ...alert, isOpen: false })}
-  type={alert.type}
-  title={alert.title}
-  message={alert.message}
-/>
+      <CustomAlert
+        isOpen={alert.isOpen}
+        onClose={() => setAlert({ ...alert, isOpen: false })}
+        type={alert.type}
+        title={alert.title}
+        message={alert.message}
+      />
     </div>
   );
 };
