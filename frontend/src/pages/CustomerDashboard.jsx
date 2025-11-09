@@ -1,14 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  ShoppingCart,
-  User,
-  Package,
-  LogOut,
-  X,
-  Search,
-  Filter,
-  RocketIcon,
-} from "lucide-react";
+import {ShoppingCart,User,Package,LogOut,X,Search,Filter,RocketIcon,} from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Cart from "../components/Cart";
@@ -470,76 +461,90 @@ const CustomerDashboard = () => {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-1">
-            Welcome back, {user?.full_name?.split(" ")[0] || "Customer"}! 👋
-          </h2>
-          <p className="text-sm text-gray-600">Discover our products</p>
-        </div>
-
-        {/* Search and Filter */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6">
-          <div className="flex flex-col sm:flex-row gap-3">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search products..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm"
-              />
+      {showProfileModal ? (
+        /* Profile View - Full Page */
+        <ProfileModal
+          isOpen={showProfileModal}
+          onClose={() => setShowProfileModal(false)}
+          user={user}
+          onUpdateUser={handleUpdateUser}
+          orders={orderHistory}
+        />
+      ) : (
+        /* Products View */
+        <>
+          <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-1">
+                Welcome back, {user?.full_name?.split(" ")[0] || "Customer"}! 👋
+              </h2>
+              <p className="text-sm text-gray-600">Discover our products</p>
             </div>
-            <div className="flex items-center gap-2">
-              <Filter className="w-4 h-4 text-gray-400" />
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm bg-white cursor-pointer"
-              >
-                <option value="all">All Categories</option>
-                {categories.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
-                ))}
-              </select>
+
+            {/* Search and Filter */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="flex-1 relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Search products..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm"
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <Filter className="w-4 h-4 text-gray-400" />
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm bg-white cursor-pointer"
+                  >
+                    <option value="all">All Categories</option>
+                    {categories.map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
-        {/* Products Grid */}
-        {loading ? (
-          <div className="text-center py-12 text-gray-500">
-            Loading products...
-          </div>
-        ) : filteredProducts.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
-            No products found
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {filteredProducts.map((product) => {
-              const cartItem = cartItems.find((item) => item.id === product.id);
-              const quantityInCart = cartItem ? cartItem.quantity : 0;
+            {/* Products Grid */}
+            {loading ? (
+              <div className="text-center py-12 text-gray-500">
+                Loading products...
+              </div>
+            ) : filteredProducts.length === 0 ? (
+              <div className="text-center py-12 text-gray-500">
+                No products found
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                {filteredProducts.map((product) => {
+                  const cartItem = cartItems.find((item) => item.id === product.id);
+                  const quantityInCart = cartItem ? cartItem.quantity : 0;
 
-              return (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  quantityInCart={quantityInCart}
-                  onAddToCart={addToCart}
-                  onUpdateQuantity={updateQuantity}
-                />
-              );
-            })}
-          </div>
-        )}
-      </main>
+                  return (
+                    <ProductCard
+                      key={product.id}
+                      product={product}
+                      quantityInCart={quantityInCart}
+                      onAddToCart={addToCart}
+                      onUpdateQuantity={updateQuantity}
+                    />
+                  );
+                })}
+              </div>
+            )}
+          </main>
 
-      {/* Footer */}
-      <Footer />
+          {/* Footer */}
+          <Footer />
+        </>
+      )}
 
       {/* Cart Component */}
       <Cart
@@ -552,15 +557,6 @@ const CustomerDashboard = () => {
         session={session}
         onCheckout={handleCheckout}
         isValidating={isValidatingCheckout}
-      />
-
-      {/* Profile Modal */}
-      <ProfileModal
-        isOpen={showProfileModal}
-        onClose={() => setShowProfileModal(false)}
-        user={user}
-        onUpdateUser={handleUpdateUser}
-        orders={orderHistory}
       />
 
       {/* Checkout Validation Modal */}

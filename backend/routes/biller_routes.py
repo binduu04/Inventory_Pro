@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from config.supabase_config import get_supabase_client
+from config.supabase_config import get_supabase_client, get_supabase_admin_client
 from utils.auth import verify_token, require_role, get_authenticated_client
 
 biller_bp = Blueprint('billers', __name__, url_prefix='/api/billers')
@@ -355,6 +355,13 @@ def create_offline_sale():
 
         if sale_items_data:
             supabase.table('sale_items').insert(sale_items_data).execute()
+        
+            #Update product stock levels
+        admin_supabase = get_supabase_admin_client()
+        for item in sale_items_data:
+            current = admin_supabase.table('products').select('current_stock').eq('id', item['product_id']).single().execute()
+            new_stock = current.data['current_stock'] - item['quantity']
+            admin_supabase.table('products').update({'current_stock': new_stock}).eq('id', item['product_id']).execute()
 
         return jsonify({
             'message': 'Sale and items added successfully',
@@ -409,7 +416,7 @@ def get_sale_items(sale_id):
             supabase.table('sales')
             .select('sale_id')
             .eq('sale_id', sale_id)
-            .eq('created_by_biller_id', request.user_id)
+            .eq('completed_by_biller_id', request.user_id)
             .execute()
         )
 

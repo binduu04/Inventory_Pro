@@ -348,7 +348,7 @@ Payment Method: ${generatedBill.payment_method}
       {/* Sidebar */}
       <div
         className={`${
-          sidebarOpen ? "w-55" : "w-20"
+          sidebarOpen ? "w-58" : "w-20"
         } bg-white border-r border-gray-200 flex flex-col shadow-sm transition-all duration-300`}
       >
         <div className="p-4 border-b border-gray-200 flex items-center justify-between">
