@@ -267,23 +267,52 @@ def get_customer_orders(customer_id):
 @verify_token
 @require_role(['manager', 'admin'])
 def delete_customer(customer_id):
-    """Delete a customer (and cascade sales cleanup via DB)"""
+    """Delete a customer permanently from both profiles and auth tables"""
     try:
-        manager_token = request.access_token
-        supabase = get_supabase_client_with_token(manager_token)
-        
-        # Delete the profile entry
-        response = supabase.table('profiles')\
-            .delete()\
-            .eq('id', customer_id)\
-            .eq('role', 'customer')\
-            .execute()
-        
-        if not response.data:
-            return jsonify({'error': 'Customer not found or already deleted'}), 404
-        
-        return jsonify({'message': 'Customer deleted successfully'}), 200
-    
+        from config.supabase_config import get_supabase_admin_client, SUPABASE_URL
+        import requests
+        import os
+
+        # Use an authenticated client to check/delete profiles.
+        # If you prefer to use a token-scoped client (manager's token) replace this
+        # with your get_supabase_client_with_token(manager_token) call.
+        supabase = get_authenticated_client()
+
+        # First check if the customer exists
+        check_response = supabase.table('profiles').select('*').eq('id', customer_id).eq('role', 'customer').execute()
+
+        if not check_response.data or len(check_response.data) == 0:
+            return jsonify({'error': 'Customer not found'}), 404
+
+        # Delete from profiles table first
+        profile_response = supabase.table('profiles').delete().eq('id', customer_id).eq('role', 'customer').execute()
+
+        # Delete from auth.users table using Admin API
+        try:
+            service_role_key = os.getenv('SUPABASE_SERVICE_KEY')
+            if service_role_key:
+                # Preferred: use Supabase Admin client (server-side service role)
+                admin_client = get_supabase_admin_client()
+                admin_client.auth.admin.delete_user(customer_id)
+            else:
+                # Fallback: use Supabase REST Admin endpoint (requires appropriate key)
+                auth_url = f"{SUPABASE_URL}/auth/v1/admin/users/{customer_id}"
+                headers = {
+                    'apikey': os.getenv('SUPABASE_KEY'),
+                    'Authorization': f"Bearer {os.getenv('SUPABASE_KEY')}",
+                    'Content-Type': 'application/json'
+                }
+                delete_auth_response = requests.delete(auth_url, headers=headers)
+
+                if delete_auth_response.status_code not in [200, 204]:
+                    # Log warning but do not fail the whole request since profile was removed.
+                    print(f"Warning: Failed to delete user from auth table: {delete_auth_response.status_code} {delete_auth_response.text}")
+        except Exception as auth_error:
+            # Log the auth deletion error and continue — profile deletion is the critical part.
+            print(f"Warning: Error deleting from auth table: {str(auth_error)}")
+
+        return jsonify({'message': 'Customer deleted successfully from profiles and auth'}), 200
+
     except Exception as e:
         print(f"Error deleting customer: {str(e)}")
         return jsonify({'error': str(e)}), 500

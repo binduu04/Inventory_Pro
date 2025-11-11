@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Users, Plus, Edit2, Trash2, Search, X, Loader } from 'lucide-react';
+import { Users, Plus, Edit2, Trash2, Search, X, Loader, Package, ShoppingBag, ListOrdered } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 // Custom Alert Component
@@ -89,7 +89,7 @@ const UserManagement = () => {
       <div className="bg-white rounded-b-xl shadow-sm border border-gray-200">
         {activeTab === 'suppliers' && <SuppliersTab showAlert={showAlert} />}
         {activeTab === 'billers' && <BillersTab showAlert={showAlert} />}
-        {activeTab === 'customers' && <CustomersTab />}
+        {activeTab === 'customers' && <CustomersTab  showAlert={showAlert} />}
       </div>
 
       <style>{`
@@ -746,13 +746,7 @@ const BillerForm = ({ biller, onCancel, onSuccess, showAlert }) => {
   );
 };
 
-// const CustomersTab = () => (
-//   <div className="p-6 text-center py-12">
-//     <Users size={64} className="mx-auto text-gray-400 mb-4" />
-//     <h3 className="text-xl font-semibold text-gray-700 mb-2">Customers Management</h3>
-//     <p className="text-gray-600">Customers management coming soon...</p>
-//   </div>
-// );
+
 
 const CustomersTab = () => {
   const { session } = useAuth();
@@ -761,6 +755,7 @@ const CustomersTab = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const showAlert = (message, type) => setAlert({ message, type });
 
@@ -835,6 +830,12 @@ const CustomersTab = () => {
     }
   };
 
+  const filteredCustomers = customers.filter(customer =>
+    customer.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    customer.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    customer.phone?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="p-6 relative">
       {loading && <LoadingOverlay />}
@@ -846,11 +847,23 @@ const CustomersTab = () => {
         />
       )}
 
-      <h2 className="text-2xl font-bold text-gray-800 mb-4">Customers</h2>
-
       {!selectedCustomer ? (
-        <div className="overflow-x-auto">
-          <table className="w-full">
+        <>
+          <div className="flex justify-between items-center mb-6">
+            <div className="flex-1 max-w-md relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              <input
+                type="text"
+                placeholder="Search customers..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
+              />
+            </div>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
@@ -861,26 +874,35 @@ const CustomersTab = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {customers.length > 0 ? (
-                customers.map((c) => (
-                  <tr key={c.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 font-medium text-gray-800">{c.full_name}</td>
+              {filteredCustomers.length > 0 ? (
+                filteredCustomers.map((c) => (
+                  <tr key={c.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-semibold text-sm mr-3">
+                          {c.full_name?.charAt(0) || 'C'}
+                        </div>
+                        <span className="text-sm font-medium text-gray-900">{c.full_name}</span>
+                      </div>
+                    </td>
                     <td className="px-6 py-4 text-sm text-gray-600">{c.email}</td>
                     <td className="px-6 py-4 text-sm text-gray-600">{c.phone}</td>
                     <td className="px-6 py-4 text-sm text-gray-600">
                       {new Date(c.created_at).toLocaleDateString()}
                     </td>
-                    <td className="px-6 py-4 text-sm">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <button
                         onClick={() => fetchOrders(c.id)}
-                        className="text-indigo-600 hover:text-indigo-900 mr-3 font-medium"
+                        className="text-indigo-600 hover:text-indigo-900 mr-4 inline-flex items-center gap-1"
                       >
+                        <ShoppingBag size={16} />
                         View Orders
                       </button>
                       <button
                         onClick={() => handleDelete(c.id)}
-                        className="text-red-600 hover:text-red-900 font-medium"
+                        className="text-red-600 hover:text-red-900 inline-flex items-center gap-1"
                       >
+                        <Trash2 size={16} />
                         Delete
                       </button>
                     </td>
@@ -889,20 +911,21 @@ const CustomersTab = () => {
               ) : (
                 <tr>
                   <td colSpan="5" className="px-6 py-8 text-center text-gray-500">
-                    No customers found
+                    {searchTerm ? 'No customers found matching your search' : 'No customers found'}
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
+        </>
       ) : (
         <div>
           <button
             onClick={() => setSelectedCustomer(null)}
             className="mb-4 text-sm text-indigo-600 hover:underline"
           >
-            ← Back to Customers
+            ← Back
           </button>
           <h3 className="text-xl font-semibold mb-3">Recent Orders</h3>
           {orders.length > 0 ? (
