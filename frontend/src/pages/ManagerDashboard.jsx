@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { Home, Users, Package, BarChart3, LogOut, Menu, X } from 'lucide-react';
+import { Home, Users, Package, BarChart3, LogOut, Menu, X, TrendingUp} from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import UserManagement from '../components/UserManagement';
 import InventoryManagement from '../components/InventoryManagement';
+
+import Forecast from '../components/Forecast';
 
 const ManagerDashboard = () => {
   const { user, signOut } = useAuth();
@@ -23,13 +25,37 @@ const ManagerDashboard = () => {
     return user?.email?.charAt(0).toUpperCase() || 'M';
   };
 
+  // const menuItems = [
+  //   { id: 'overview', label: 'Overview', icon: Home },
+  //   { id: 'user-management', label: 'Users', icon: Users },
+  //   { id: 'inventory', label: 'Inventory', icon: Package },
+  //   { id: 'analytics', label: 'Analytics', icon: BarChart3 }
+  // ];
   const menuItems = [
-    { id: 'overview', label: 'Overview', icon: Home },
-    { id: 'user-management', label: 'Users', icon: Users },
-    { id: 'inventory', label: 'Inventory', icon: Package },
-    { id: 'analytics', label: 'Analytics', icon: BarChart3 }
-  ];
+  { id: 'overview', label: 'Overview', icon: Home },
+  { id: 'user-management', label: 'Users', icon: Users },
+  { id: 'inventory', label: 'Inventory', icon: Package },
+  { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+  // { id: 'forecast', label: 'Forecast', icon: BarChart3 } // you can later replace with a custom icon
+  { id: 'forecast', label: 'Forecast', icon: TrendingUp }
 
+];
+
+
+  // const renderContent = () => {
+  //   switch(activeSection) {
+  //     case 'overview':
+  //       return <OverviewContent />;
+  //     case 'user-management':
+  //       return <UserManagement />;
+  //     case 'inventory':
+  //       return <InventoryManagement />;
+  //     case 'analytics':
+  //       return <AnalyticsContent />;
+  //     default:
+  //       return <OverviewContent />;
+  //   }
+  // };
   const renderContent = () => {
     switch(activeSection) {
       case 'overview':
@@ -40,10 +66,13 @@ const ManagerDashboard = () => {
         return <InventoryManagement />;
       case 'analytics':
         return <AnalyticsContent />;
+      case 'forecast':
+        return <Forecast />;  // 🔥 New line added
       default:
         return <OverviewContent />;
     }
   };
+
 
   return (
     <div className="flex h-screen bg-gray-50">
