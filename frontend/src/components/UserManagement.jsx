@@ -746,12 +746,197 @@ const BillerForm = ({ biller, onCancel, onSuccess, showAlert }) => {
   );
 };
 
-const CustomersTab = () => (
-  <div className="p-6 text-center py-12">
-    <Users size={64} className="mx-auto text-gray-400 mb-4" />
-    <h3 className="text-xl font-semibold text-gray-700 mb-2">Customers Management</h3>
-    <p className="text-gray-600">Customers management coming soon...</p>
-  </div>
-);
+// const CustomersTab = () => (
+//   <div className="p-6 text-center py-12">
+//     <Users size={64} className="mx-auto text-gray-400 mb-4" />
+//     <h3 className="text-xl font-semibold text-gray-700 mb-2">Customers Management</h3>
+//     <p className="text-gray-600">Customers management coming soon...</p>
+//   </div>
+// );
+
+const CustomersTab = () => {
+  const { session } = useAuth();
+  const [customers, setCustomers] = useState([]);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [alert, setAlert] = useState(null);
+
+  const showAlert = (message, type) => setAlert({ message, type });
+
+  useEffect(() => {
+    fetchCustomers();
+  }, []);
+
+  const fetchCustomers = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("http://localhost:5000/api/customer/all", {
+        headers: {
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setCustomers(data.customers || []);
+      } else {
+        showAlert(data.error || "Failed to fetch customers", "error");
+      }
+    } catch (err) {
+      console.error("Error fetching customers:", err);
+      showAlert("Network error", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchOrders = async (customerId) => {
+    setLoading(true);
+    try {
+      const response = await fetch(`http://localhost:5000/api/customer/${customerId}/orders`, {
+        headers: {
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setOrders(data.orders || []);
+        setSelectedCustomer(customerId);
+      } else {
+        showAlert(data.error || "Failed to fetch orders", "error");
+      }
+    } catch (err) {
+      console.error("Error fetching orders:", err);
+      showAlert("Network error", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (customerId) => {
+    if (!window.confirm("Are you sure you want to delete this customer?")) return;
+    try {
+      const response = await fetch(`http://localhost:5000/api/customer/${customerId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setCustomers(customers.filter((c) => c.id !== customerId));
+        showAlert("Customer deleted successfully", "success");
+      } else {
+        showAlert(data.error || "Failed to delete customer", "error");
+      }
+    } catch (err) {
+      console.error("Error deleting customer:", err);
+      showAlert("Network error", "error");
+    }
+  };
+
+  return (
+    <div className="p-6 relative">
+      {loading && <LoadingOverlay />}
+      {alert && (
+        <CustomAlert
+          message={alert.message}
+          type={alert.type}
+          onClose={() => setAlert(null)}
+        />
+      )}
+
+      <h2 className="text-2xl font-bold text-gray-800 mb-4">Customers</h2>
+
+      {!selectedCustomer ? (
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Phone</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Joined</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {customers.length > 0 ? (
+                customers.map((c) => (
+                  <tr key={c.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 font-medium text-gray-800">{c.full_name}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{c.email}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{c.phone}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">
+                      {new Date(c.created_at).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4 text-sm">
+                      <button
+                        onClick={() => fetchOrders(c.id)}
+                        className="text-indigo-600 hover:text-indigo-900 mr-3 font-medium"
+                      >
+                        View Orders
+                      </button>
+                      <button
+                        onClick={() => handleDelete(c.id)}
+                        className="text-red-600 hover:text-red-900 font-medium"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5" className="px-6 py-8 text-center text-gray-500">
+                    No customers found
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div>
+          <button
+            onClick={() => setSelectedCustomer(null)}
+            className="mb-4 text-sm text-indigo-600 hover:underline"
+          >
+            ← Back to Customers
+          </button>
+          <h3 className="text-xl font-semibold mb-3">Recent Orders</h3>
+          {orders.length > 0 ? (
+            <div className="space-y-4">
+              {orders.map((order) => (
+                <div key={order.sale_id} className="border border-gray-200 rounded-lg p-4 shadow-sm">
+                  <div className="flex justify-between text-sm text-gray-700 mb-2">
+                    <span><strong>Order:</strong> {order.order_number}</span>
+                    <span><strong>Date:</strong> {new Date(order.date).toLocaleString()}</span>
+                  </div>
+                  <div className="text-gray-700 mb-2">
+                    <strong>Status:</strong> {order.status || "N/A"}
+                  </div>
+                  <div className="text-gray-700 mb-2">
+                    <strong>Total:</strong> ₹{order.total.toFixed(2)}
+                  </div>
+                  <ul className="text-sm text-gray-600 list-disc ml-5">
+                    {order.sale_items.map((item, i) => (
+                      <li key={i}>
+                        {item.products?.product_name} × {item.quantity} — ₹{item.subtotal}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-600">No recent orders found.</p>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
 
 export default UserManagement;

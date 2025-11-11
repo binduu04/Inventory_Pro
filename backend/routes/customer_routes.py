@@ -196,3 +196,94 @@ def update_customer_profile():
     except Exception as e:
         print(f"Error updating customer profile: {str(e)}")
         return jsonify({'error': str(e)}), 500
+    
+
+from utils.auth import verify_token, require_role
+from config.supabase_config import get_supabase_client_with_token
+
+
+@customer_bp.route('/all', methods=['GET'])
+@verify_token
+@require_role(['manager', 'admin'])
+def get_all_customers():
+    """Get all customer profiles"""
+    try:
+        manager_token = request.access_token
+        supabase = get_supabase_client_with_token(manager_token)
+        
+        # Fetch only customers
+        response = supabase.table('profiles')\
+            .select('id, full_name, email, phone, role, created_at, updated_at')\
+            .eq('role', 'customer')\
+            .order('created_at', desc=True)\
+            .execute()
+        
+        customers = response.data or []
+        return jsonify({'customers': customers, 'count': len(customers)}), 200
+    
+    except Exception as e:
+        print(f"Error fetching customers: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+@customer_bp.route('/<customer_id>/orders', methods=['GET'])
+@verify_token
+@require_role(['manager', 'admin'])
+def get_customer_orders(customer_id):
+    """Fetch the 5 most recent orders for a specific customer"""
+    try:
+        manager_token = request.access_token
+        supabase = get_supabase_client_with_token(manager_token)
+        
+        # Fetch recent 5 orders for this customer
+        response = supabase.table('sales')\
+            .select('sale_id, sale_date, total_amount, sale_type, order_status, '
+                    'payment_method, sale_items(*, products(product_name, image_url))')\
+            .eq('customer_id', customer_id)\
+            .order('sale_date', desc=True)\
+            .limit(5)\
+            .execute()
+        
+        orders = []
+        for sale in response.data:
+            orders.append({
+                'sale_id': sale['sale_id'],
+                'order_number': f"ORD-{str(sale['sale_id']).zfill(6)}",
+                'date': sale['sale_date'],
+                'total': float(sale['total_amount']),
+                'status': sale.get('order_status'),
+                'payment_method': sale.get('payment_method'),
+                'sale_items': sale.get('sale_items', [])
+            })
+        
+        return jsonify({'orders': orders, 'count': len(orders)}), 200
+    
+    except Exception as e:
+        print(f"Error fetching customer orders: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+@customer_bp.route('/<customer_id>', methods=['DELETE'])
+@verify_token
+@require_role(['manager', 'admin'])
+def delete_customer(customer_id):
+    """Delete a customer (and cascade sales cleanup via DB)"""
+    try:
+        manager_token = request.access_token
+        supabase = get_supabase_client_with_token(manager_token)
+        
+        # Delete the profile entry
+        response = supabase.table('profiles')\
+            .delete()\
+            .eq('id', customer_id)\
+            .eq('role', 'customer')\
+            .execute()
+        
+        if not response.data:
+            return jsonify({'error': 'Customer not found or already deleted'}), 404
+        
+        return jsonify({'message': 'Customer deleted successfully'}), 200
+    
+    except Exception as e:
+        print(f"Error deleting customer: {str(e)}")
+        return jsonify({'error': str(e)}), 500
