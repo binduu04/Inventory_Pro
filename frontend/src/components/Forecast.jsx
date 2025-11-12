@@ -152,7 +152,7 @@ const Forecast = () => {
               </tr>
             </thead>
             <tbody>
-              {forecastData.slice(0, 20).map((item, idx) => (
+              {forecastData.slice(0, 50).map((item, idx) => (
                 <tr key={idx} className="hover:bg-gray-50 transition-all">
                   <td className="border p-2 font-medium text-gray-800">
                     {item.product}
@@ -177,7 +177,7 @@ const Forecast = () => {
           </table>
           {forecastData.length > 20 && (
             <p className="text-gray-500 text-sm mt-4 text-center">
-              Showing first 20 of {forecastData.length} products
+              Showing all 50 products
             </p>
           )}
         </div>

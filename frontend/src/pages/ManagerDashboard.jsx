@@ -7,6 +7,9 @@ import InventoryManagement from '../components/InventoryManagement';
 
 import Forecast from '../components/Forecast';
 
+
+import Analytics from '../components/Analytics';
+
 const ManagerDashboard = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
@@ -44,8 +47,11 @@ const ManagerDashboard = () => {
         return <UserManagement />;
       case 'inventory':
         return <InventoryManagement />;
+      // case 'analytics':
+      //   return <AnalyticsContent />;
       case 'analytics':
-        return <AnalyticsContent />;
+        return <Analytics />;
+
       case 'forecast':
         return <Forecast />;  // 🔥 New line added
       default:
@@ -146,15 +152,15 @@ const OverviewContent = () => (
   </div>
 );
 
-const AnalyticsContent = () => (
-  <div>
-    <h1 className="text-3xl font-bold text-gray-800 mb-6">Analytics</h1>
-    <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200 text-center">
-      <BarChart3 size={64} className="mx-auto text-gray-400 mb-4" />
-      <h3 className="text-xl font-semibold text-gray-700 mb-2">Coming Soon</h3>
-      <p className="text-gray-600">Analytics dashboard will be available here.</p>
-    </div>
-  </div>
-);
+// const AnalyticsContent = () => (
+//   <div>
+//     <h1 className="text-3xl font-bold text-gray-800 mb-6">Analytics</h1>
+//     <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200 text-center">
+//       <BarChart3 size={64} className="mx-auto text-gray-400 mb-4" />
+//       <h3 className="text-xl font-semibold text-gray-700 mb-2">Coming Soon</h3>
+//       <p className="text-gray-600">Analytics dashboard will be available here.</p>
+//     </div>
+//   </div>
+// );
 
 export default ManagerDashboard;

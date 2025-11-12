@@ -15,6 +15,10 @@ from routes.cart_routes import cart_bp
 from routes.order_routes import order_bp
 from routes.forecast_routes import forecast_bp
 
+from routes.analytics_routes import analytics_bp
+
+
+
 def create_app():
     app = Flask(__name__)
     
@@ -35,6 +39,8 @@ def create_app():
     app.register_blueprint(cart_bp, url_prefix='/api/cart')
     app.register_blueprint(order_bp, url_prefix='/api/orders')
     app.register_blueprint(forecast_bp)
+
+    app.register_blueprint(analytics_bp)
     
     # Health check endpoint
     @app.route('/health', methods=['GET'])
