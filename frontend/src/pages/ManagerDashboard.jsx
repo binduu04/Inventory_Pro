@@ -25,37 +25,17 @@ const ManagerDashboard = () => {
     return user?.email?.charAt(0).toUpperCase() || 'M';
   };
 
-  // const menuItems = [
-  //   { id: 'overview', label: 'Overview', icon: Home },
-  //   { id: 'user-management', label: 'Users', icon: Users },
-  //   { id: 'inventory', label: 'Inventory', icon: Package },
-  //   { id: 'analytics', label: 'Analytics', icon: BarChart3 }
-  // ];
+ 
   const menuItems = [
   { id: 'overview', label: 'Overview', icon: Home },
   { id: 'user-management', label: 'Users', icon: Users },
   { id: 'inventory', label: 'Inventory', icon: Package },
   { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-  // { id: 'forecast', label: 'Forecast', icon: BarChart3 } // you can later replace with a custom icon
   { id: 'forecast', label: 'Forecast', icon: TrendingUp }
 
 ];
 
 
-  // const renderContent = () => {
-  //   switch(activeSection) {
-  //     case 'overview':
-  //       return <OverviewContent />;
-  //     case 'user-management':
-  //       return <UserManagement />;
-  //     case 'inventory':
-  //       return <InventoryManagement />;
-  //     case 'analytics':
-  //       return <AnalyticsContent />;
-  //     default:
-  //       return <OverviewContent />;
-  //   }
-  // };
   const renderContent = () => {
     switch(activeSection) {
       case 'overview':

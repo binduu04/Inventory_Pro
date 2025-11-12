@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { TrendingUp, Loader2, Download } from "lucide-react";
-import axios from "axios";
 
 const Forecast = () => {
   const [loading, setLoading] = useState(false);
@@ -13,21 +12,35 @@ const Forecast = () => {
     setForecastData([]);
 
     try {
-      const endpoint =
-        type === "manual"
-          ? "/api/forecast/manual"
-          : "/api/forecast/save"; // backend routes (to be added later)
-
-      // Simulated delay for demo
-      // const response = await axios.post(endpoint);
-      await new Promise((resolve) => setTimeout(resolve, 1500)); // simulate API call
-      const response = {
-        data: generateDummyForecast(),
-      };
-
-      setForecastData(response.data);
+      if (type === "manual") {
+        // Call the real forecast API
+        const response = await fetch("http://localhost:5000/api/forecast/generate", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            num_days: 7
+          }),
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.success) {
+          // Transform API response to component format
+          const transformedData = transformForecastData(data.forecast);
+          setForecastData(transformedData);
+        } else {
+          console.error("Forecast API returned error:", data.error);
+          alert("Failed to generate forecast: " + (data.error || "Unknown error"));
+        }
+      } else {
+        // EOD upload not implemented yet
+        alert("EOD sales upload feature coming soon!");
+      }
     } catch (error) {
       console.error("Error fetching forecast:", error);
+      alert("Failed to generate forecast. Make sure backend is running and models are trained.");
     } finally {
       setLoading(false);
     }
@@ -72,7 +85,7 @@ const Forecast = () => {
               : "bg-indigo-600 hover:bg-indigo-700 text-white"
           }`}
         >
-          Manual Forecast (till yesterday)
+           Run Forecast 
         </button>
 
         <button
@@ -84,7 +97,7 @@ const Forecast = () => {
               : "bg-green-600 hover:bg-green-700 text-white"
           }`}
         >
-          Save + Forecast (includes today)
+          Upload EOD sales + Forecast 
         </button>
 
         {forecastData.length > 0 && (
@@ -124,24 +137,28 @@ const Forecast = () => {
       {!loading && forecastData.length > 0 && (
         <div className="bg-white shadow-md rounded-xl border border-gray-200 p-6 overflow-x-auto">
           <h2 className="text-lg font-semibold text-gray-800 mb-4">
-            7-Day Forecast Results
+            7-Day Forecast Results ({forecastData.length} Products)
           </h2>
           <table className="w-full border-collapse text-sm">
             <thead>
               <tr className="bg-indigo-50 text-gray-700">
                 <th className="border p-2 text-left">Product</th>
-                {[...Array(7)].map((_, i) => (
+                <th className="border p-2 text-left">Category</th>
+                {forecastData[0]?.forecast.map((day, i) => (
                   <th key={i} className="border p-2 text-center">
-                    Day {i + 1}
+                    {new Date(day.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                   </th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {forecastData.map((item, idx) => (
+              {forecastData.slice(0, 20).map((item, idx) => (
                 <tr key={idx} className="hover:bg-gray-50 transition-all">
                   <td className="border p-2 font-medium text-gray-800">
                     {item.product}
+                  </td>
+                  <td className="border p-2 text-gray-600 text-xs">
+                    {item.category}
                   </td>
                   {item.forecast.map((day, i) => (
                     <td
@@ -149,6 +166,7 @@ const Forecast = () => {
                       className={`border p-2 text-center rounded-md ${getColorClass(
                         day.level
                       )}`}
+                      title={`₹${day.revenue.toFixed(2)}`}
                     >
                       {day.qty}
                     </td>
@@ -157,29 +175,51 @@ const Forecast = () => {
               ))}
             </tbody>
           </table>
+          {forecastData.length > 20 && (
+            <p className="text-gray-500 text-sm mt-4 text-center">
+              Showing first 20 of {forecastData.length} products
+            </p>
+          )}
         </div>
       )}
     </div>
   );
 };
 
-// --- Dummy Data Generator (for now, until backend connects)
-const generateDummyForecast = () => {
-  const products = [
-    "Amul Milk 1L",
-    "Aashirvaad Atta 5kg",
-    "Parle-G Biscuits",
-    "Surf Excel 1kg",
-    "Coca-Cola 2L",
-  ];
-  const levels = ["red", "yellow", "green"];
-  return products.map((p) => ({
-    product: p,
-    forecast: Array.from({ length: 7 }, () => ({
-      qty: Math.floor(Math.random() * 150 + 20),
-      level: levels[Math.floor(Math.random() * 3)],
-    })),
-  }));
+// --- Transform API response to component format
+const transformForecastData = (apiData) => {
+  // Group by product and create 7-day forecast per product
+  const productMap = {};
+  
+  apiData.forEach(item => {
+    if (!productMap[item.product_name]) {
+      productMap[item.product_name] = {
+        product: item.product_name,
+        category: item.category,
+        forecast: []
+      };
+    }
+    
+    // Determine urgency level based on quantity
+    let level = 'green';
+    if (item.predicted_quantity < 10) {
+      level = 'red'; // Low stock urgency
+    } else if (item.predicted_quantity < 30) {
+      level = 'yellow'; // Medium stock
+    }
+    
+    productMap[item.product_name].forecast.push({
+      date: item.date,
+      qty: item.predicted_quantity,
+      revenue: item.forecasted_revenue,
+      level: level
+    });
+  });
+  
+  // Convert to array and sort by product name
+  return Object.values(productMap).sort((a, b) => 
+    a.product.localeCompare(b.product)
+  );
 };
 
 export default Forecast;

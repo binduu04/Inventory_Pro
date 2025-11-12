@@ -17,3 +17,13 @@ websockets>=12,<14
 
 # Optional for production serving (not needed for local dev on Windows)
 gunicorn==21.2.0
+
+# ML and data science packages for forecasting
+pandas
+numpy
+scikit-learn
+lightgbm
+xgboost
+catboost
+joblib
+scipy
