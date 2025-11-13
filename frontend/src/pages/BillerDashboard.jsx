@@ -377,7 +377,7 @@ Payment Method: ${generatedBill.payment_method}
             <div className="relative">
               <Package size={20} />
               {pendingOrdersCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-orange-500 rounded-full border-2 border-white animate-pulse"></span>
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-500 rounded-full border-2 border-white animate-pulse"></span>
               )}
             </div>
             <span className={`${sidebarOpen ? "block" : "hidden"}`}>

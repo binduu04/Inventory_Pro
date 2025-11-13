@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import numpy as np
 
 FESTIVAL_DATES_2023 = {
     "Diwali": "2023-11-12",
@@ -147,6 +148,15 @@ def get_discount_for_product(product_category, festival_discount_percent=0, flas
                 else:
                     # Use default flash sale discount
                     discount = max(discount, 12.0)
+                    
+    
+    day_of_week = check_date.weekday()
+    daily_category_map = {
+        0: "Dairy", 1: "Beverages", 2: "Snacks", 3: "Personal Care",
+        4: "Staples", 5: "Snacks", 6: "Beverages"
+    }
+    if product_category == daily_category_map.get(day_of_week):
+        discount = max(discount, np.random.choice([2.0, 2.25, 2.5, 2.75, 3.0, 3.25, 3.5]))
     
     return discount
 

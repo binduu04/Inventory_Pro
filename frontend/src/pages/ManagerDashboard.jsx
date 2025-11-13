@@ -6,8 +6,6 @@ import UserManagement from '../components/UserManagement';
 import InventoryManagement from '../components/InventoryManagement';
 
 import Forecast from '../components/Forecast';
-
-
 import Analytics from '../components/Analytics';
 
 const ManagerDashboard = () => {
@@ -47,11 +45,8 @@ const ManagerDashboard = () => {
         return <UserManagement />;
       case 'inventory':
         return <InventoryManagement />;
-      // case 'analytics':
-      //   return <AnalyticsContent />;
       case 'analytics':
         return <Analytics />;
-
       case 'forecast':
         return <Forecast />;  // 🔥 New line added
       default:

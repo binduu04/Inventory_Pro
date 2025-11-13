@@ -1,5 +1,4 @@
 .env
-venv/
 
 
 database_setup.sql
