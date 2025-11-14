@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Package, Truck, CheckCircle, Eye, Calendar, User, Mail, Phone, ShoppingBag } from "lucide-react";
+import { X, Package, Truck, CheckCircle, Eye, Calendar, User, Mail, Phone, ShoppingBag } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 const PurchaseOrders = () => {
@@ -286,9 +286,9 @@ const OrderDetailsModal = ({ order, onClose, onMarkReceived, isReceiving }) => {
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-white hover:bg-opacity-20 rounded-lg transition-colors"
+              className="p-2 hover:bg-red-600 rounded-lg "
             >
-              <Package size={24} />
+              <X size={24} />
             </button>
           </div>
         </div>

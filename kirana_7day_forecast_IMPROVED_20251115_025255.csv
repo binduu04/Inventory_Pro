@@ -1,0 +1,351 @@
+sale_date,product_name,category,season_affinity,price,cost_price,discount_percent,final_price,is_festival,festival_name,is_weekend,predicted_quantity_lgb,predicted_quantity_xgb,predicted_quantity_catboost,predicted_quantity_ensemble,forecasted_revenue
+2025-11-15,Aashirvaad Atta 5kg,Staples,all,250,180,0.0,250.0,0,,1,27,27,27,27,6750.0
+2025-11-16,Aashirvaad Atta 5kg,Staples,all,250,180,0.0,250.0,0,,1,27,27,27,27,6750.0
+2025-11-17,Aashirvaad Atta 5kg,Staples,all,250,180,0.0,250.0,0,,0,27,27,27,27,6750.0
+2025-11-18,Aashirvaad Atta 5kg,Staples,all,250,180,0.0,250.0,0,,0,27,27,26,26,6500.0
+2025-11-19,Aashirvaad Atta 5kg,Staples,all,250,180,0.0,250.0,0,,0,27,27,26,26,6500.0
+2025-11-20,Aashirvaad Atta 5kg,Staples,all,250,180,0.0,250.0,0,,0,27,27,27,27,6750.0
+2025-11-21,Aashirvaad Atta 5kg,Staples,all,250,180,3.5,241.25,0,,0,27,27,29,28,6755.0
+2025-11-15,Amul Butter 100g,Dairy,all,60,42,0.0,60.0,0,,1,29,31,29,29,1740.0
+2025-11-16,Amul Butter 100g,Dairy,all,60,42,0.0,60.0,0,,1,29,31,29,29,1740.0
+2025-11-17,Amul Butter 100g,Dairy,all,60,42,2.75,58.35,0,,0,29,31,28,28,1633.8
+2025-11-18,Amul Butter 100g,Dairy,all,60,42,0.0,60.0,0,,0,29,31,28,28,1680.0
+2025-11-19,Amul Butter 100g,Dairy,all,60,42,0.0,60.0,0,,0,29,31,28,28,1680.0
+2025-11-20,Amul Butter 100g,Dairy,all,60,42,0.0,60.0,0,,0,29,31,29,29,1740.0
+2025-11-21,Amul Butter 100g,Dairy,all,60,42,0.0,60.0,0,,0,29,31,30,30,1800.0
+2025-11-15,Amul Buttermilk 200ml,Dairy,summer,15,9,0.0,15.0,0,,1,25,24,24,24,360.0
+2025-11-16,Amul Buttermilk 200ml,Dairy,summer,15,9,0.0,15.0,0,,1,25,24,24,24,360.0
+2025-11-17,Amul Buttermilk 200ml,Dairy,summer,15,9,3.0,14.549999999999999,0,,0,25,24,23,24,349.2
+2025-11-18,Amul Buttermilk 200ml,Dairy,summer,15,9,0.0,15.0,0,,0,24,24,23,23,345.0
+2025-11-19,Amul Buttermilk 200ml,Dairy,summer,15,9,0.0,15.0,0,,0,24,24,23,23,345.0
+2025-11-20,Amul Buttermilk 200ml,Dairy,summer,15,9,0.0,15.0,0,,0,24,24,24,24,360.0
+2025-11-21,Amul Buttermilk 200ml,Dairy,summer,15,9,0.0,15.0,0,,0,25,24,25,25,375.0
+2025-11-15,Amul Cheese Slices 200g,Dairy,all,120,85,0.0,120.0,0,,1,24,23,22,23,2760.0
+2025-11-16,Amul Cheese Slices 200g,Dairy,all,120,85,0.0,120.0,0,,1,24,23,22,23,2760.0
+2025-11-17,Amul Cheese Slices 200g,Dairy,all,120,85,3.5,115.8,0,,0,24,23,22,22,2547.6
+2025-11-18,Amul Cheese Slices 200g,Dairy,all,120,85,0.0,120.0,0,,0,24,23,21,22,2640.0
+2025-11-19,Amul Cheese Slices 200g,Dairy,all,120,85,0.0,120.0,0,,0,24,23,21,22,2640.0
+2025-11-20,Amul Cheese Slices 200g,Dairy,all,120,85,0.0,120.0,0,,0,24,23,22,23,2760.0
+2025-11-21,Amul Cheese Slices 200g,Dairy,all,120,85,0.0,120.0,0,,0,24,23,23,23,2760.0
+2025-11-15,Amul Ghee 500ml,Dairy,winter,300,220,0.0,300.0,0,,1,13,13,13,13,3900.0
+2025-11-16,Amul Ghee 500ml,Dairy,winter,300,220,0.0,300.0,0,,1,13,13,13,13,3900.0
+2025-11-17,Amul Ghee 500ml,Dairy,winter,300,220,2.5,292.5,0,,0,13,13,12,12,3510.0
+2025-11-18,Amul Ghee 500ml,Dairy,winter,300,220,0.0,300.0,0,,0,13,13,12,12,3600.0
+2025-11-19,Amul Ghee 500ml,Dairy,winter,300,220,0.0,300.0,0,,0,13,13,12,12,3600.0
+2025-11-20,Amul Ghee 500ml,Dairy,winter,300,220,0.0,300.0,0,,0,13,13,12,13,3900.0
+2025-11-21,Amul Ghee 500ml,Dairy,winter,300,220,0.0,300.0,0,,0,13,13,13,13,3900.0
+2025-11-15,Amul Lassi 200ml,Dairy,summer,20,12,0.0,20.0,0,,1,31,31,30,31,620.0
+2025-11-16,Amul Lassi 200ml,Dairy,summer,20,12,0.0,20.0,0,,1,31,31,31,31,620.0
+2025-11-17,Amul Lassi 200ml,Dairy,summer,20,12,3.0,19.4,0,,0,31,30,29,30,582.0
+2025-11-18,Amul Lassi 200ml,Dairy,summer,20,12,0.0,20.0,0,,0,31,31,29,30,600.0
+2025-11-19,Amul Lassi 200ml,Dairy,summer,20,12,0.0,20.0,0,,0,31,30,29,30,600.0
+2025-11-20,Amul Lassi 200ml,Dairy,summer,20,12,0.0,20.0,0,,0,31,31,30,31,620.0
+2025-11-21,Amul Lassi 200ml,Dairy,summer,20,12,0.0,20.0,0,,0,31,31,31,31,620.0
+2025-11-15,Amul Milk 1L,Dairy,all,50,35,0.0,50.0,0,,1,68,65,64,65,3250.0
+2025-11-16,Amul Milk 1L,Dairy,all,50,35,0.0,50.0,0,,1,68,65,64,65,3250.0
+2025-11-17,Amul Milk 1L,Dairy,all,50,35,3.0,48.5,0,,0,66,65,62,63,3055.5
+2025-11-18,Amul Milk 1L,Dairy,all,50,35,0.0,50.0,0,,0,68,65,62,64,3200.0
+2025-11-19,Amul Milk 1L,Dairy,all,50,35,0.0,50.0,0,,0,68,65,63,64,3200.0
+2025-11-20,Amul Milk 1L,Dairy,all,50,35,0.0,50.0,0,,0,68,65,64,65,3250.0
+2025-11-21,Amul Milk 1L,Dairy,all,50,35,0.0,50.0,0,,0,68,65,65,66,3300.0
+2025-11-15,Bikano Soan Papdi 250g,Snacks,winter,100,70,3.5,96.5,0,,1,11,21,14,13,1254.5
+2025-11-16,Bikano Soan Papdi 250g,Snacks,winter,100,70,0.0,100.0,0,,1,11,21,13,12,1200.0
+2025-11-17,Bikano Soan Papdi 250g,Snacks,winter,100,70,0.0,100.0,0,,0,10,20,11,11,1100.0
+2025-11-18,Bikano Soan Papdi 250g,Snacks,winter,100,70,0.0,100.0,0,,0,11,20,11,11,1100.0
+2025-11-19,Bikano Soan Papdi 250g,Snacks,winter,100,70,2.25,97.75,0,,0,11,21,12,11,1075.25
+2025-11-20,Bikano Soan Papdi 250g,Snacks,winter,100,70,0.0,100.0,0,,0,11,20,12,12,1200.0
+2025-11-21,Bikano Soan Papdi 250g,Snacks,winter,100,70,0.0,100.0,0,,0,11,20,13,12,1200.0
+2025-11-15,Bisleri Water 1L,Beverages,summer,20,12,0.0,20.0,0,,1,52,51,49,50,1000.0
+2025-11-16,Bisleri Water 1L,Beverages,summer,20,12,2.5,19.5,0,,1,52,51,49,50,975.0
+2025-11-17,Bisleri Water 1L,Beverages,summer,20,12,0.0,20.0,0,,0,52,51,48,49,980.0
+2025-11-18,Bisleri Water 1L,Beverages,summer,20,12,3.5,19.3,0,,0,52,50,48,49,945.7
+2025-11-19,Bisleri Water 1L,Beverages,summer,20,12,0.0,20.0,0,,0,52,51,48,49,980.0
+2025-11-20,Bisleri Water 1L,Beverages,summer,20,12,0.0,20.0,0,,0,52,51,49,50,1000.0
+2025-11-21,Bisleri Water 1L,Beverages,summer,20,12,0.0,20.0,0,,0,52,51,50,50,1000.0
+2025-11-15,Britannia Bourbon 120g,Snacks,all,30,20,2.5,29.25,0,,1,32,35,32,32,936.0
+2025-11-16,Britannia Bourbon 120g,Snacks,all,30,20,0.0,30.0,0,,1,32,34,32,32,960.0
+2025-11-17,Britannia Bourbon 120g,Snacks,all,30,20,0.0,30.0,0,,0,30,33,30,30,900.0
+2025-11-18,Britannia Bourbon 120g,Snacks,all,30,20,0.0,30.0,0,,0,31,34,30,31,930.0
+2025-11-19,Britannia Bourbon 120g,Snacks,all,30,20,2.5,29.25,0,,0,31,34,31,31,906.75
+2025-11-20,Britannia Bourbon 120g,Snacks,all,30,20,0.0,30.0,0,,0,32,34,31,31,930.0
+2025-11-21,Britannia Bourbon 120g,Snacks,all,30,20,0.0,30.0,0,,0,32,34,32,32,960.0
+2025-11-15,Britannia Good Day 100g,Snacks,all,30,20,3.0,29.099999999999998,0,,1,37,43,37,37,1076.6999999999998
+2025-11-16,Britannia Good Day 100g,Snacks,all,30,20,0.0,30.0,0,,1,37,43,37,37,1110.0
+2025-11-17,Britannia Good Day 100g,Snacks,all,30,20,0.0,30.0,0,,0,37,43,36,36,1080.0
+2025-11-18,Britannia Good Day 100g,Snacks,all,30,20,0.0,30.0,0,,0,37,43,36,36,1080.0
+2025-11-19,Britannia Good Day 100g,Snacks,all,30,20,2.75,29.175,0,,0,37,43,36,36,1050.3
+2025-11-20,Britannia Good Day 100g,Snacks,all,30,20,0.0,30.0,0,,0,37,43,37,37,1110.0
+2025-11-21,Britannia Good Day 100g,Snacks,all,30,20,0.0,30.0,0,,0,37,43,38,37,1110.0
+2025-11-15,Britannia Milk Bread,Dairy,all,35,22,0.0,35.0,0,,1,48,48,50,50,1750.0
+2025-11-16,Britannia Milk Bread,Dairy,all,35,22,0.0,35.0,0,,1,48,48,50,49,1715.0
+2025-11-17,Britannia Milk Bread,Dairy,all,35,22,2.5,34.125,0,,0,48,48,49,49,1672.125
+2025-11-18,Britannia Milk Bread,Dairy,all,35,22,0.0,35.0,0,,0,48,48,49,48,1680.0
+2025-11-19,Britannia Milk Bread,Dairy,all,35,22,0.0,35.0,0,,0,47,48,49,49,1715.0
+2025-11-20,Britannia Milk Bread,Dairy,all,35,22,0.0,35.0,0,,0,47,48,50,49,1715.0
+2025-11-21,Britannia Milk Bread,Dairy,all,35,22,0.0,35.0,0,,0,48,48,51,50,1750.0
+2025-11-15,Cadbury Dairy Milk 55g,Snacks,winter,50,35,3.25,48.375,0,,1,39,39,37,38,1838.25
+2025-11-16,Cadbury Dairy Milk 55g,Snacks,winter,50,35,0.0,50.0,0,,1,39,38,37,37,1850.0
+2025-11-17,Cadbury Dairy Milk 55g,Snacks,winter,50,35,0.0,50.0,0,,0,39,38,36,36,1800.0
+2025-11-18,Cadbury Dairy Milk 55g,Snacks,winter,50,35,0.0,50.0,0,,0,39,38,36,37,1850.0
+2025-11-19,Cadbury Dairy Milk 55g,Snacks,winter,50,35,3.0,48.5,0,,0,39,38,36,37,1794.5
+2025-11-20,Cadbury Dairy Milk 55g,Snacks,winter,50,35,0.0,50.0,0,,0,39,38,37,37,1850.0
+2025-11-21,Cadbury Dairy Milk 55g,Snacks,winter,50,35,0.0,50.0,0,,0,39,38,37,38,1900.0
+2025-11-15,Catch Chilli Powder 100g,Staples,all,65,45,0.0,65.0,0,,1,15,15,14,15,975.0
+2025-11-16,Catch Chilli Powder 100g,Staples,all,65,45,0.0,65.0,0,,1,15,15,14,15,975.0
+2025-11-17,Catch Chilli Powder 100g,Staples,all,65,45,0.0,65.0,0,,0,15,15,13,14,910.0
+2025-11-18,Catch Chilli Powder 100g,Staples,all,65,45,0.0,65.0,0,,0,15,15,13,14,910.0
+2025-11-19,Catch Chilli Powder 100g,Staples,all,65,45,0.0,65.0,0,,0,15,15,13,14,910.0
+2025-11-20,Catch Chilli Powder 100g,Staples,all,65,45,0.0,65.0,0,,0,15,15,14,14,910.0
+2025-11-21,Catch Chilli Powder 100g,Staples,all,65,45,2.25,63.5375,0,,0,15,15,15,15,953.0625
+2025-11-15,Clinic Plus Shampoo 340ml,Personal Care,all,160,115,0.0,160.0,0,,1,14,14,15,15,2400.0
+2025-11-16,Clinic Plus Shampoo 340ml,Personal Care,all,160,115,0.0,160.0,0,,1,14,14,15,15,2400.0
+2025-11-17,Clinic Plus Shampoo 340ml,Personal Care,all,160,115,0.0,160.0,0,,0,14,14,14,14,2240.0
+2025-11-18,Clinic Plus Shampoo 340ml,Personal Care,all,160,115,0.0,160.0,0,,0,14,14,14,14,2240.0
+2025-11-19,Clinic Plus Shampoo 340ml,Personal Care,all,160,115,12.0,140.8,0,,0,14,14,15,14,1971.2000000000003
+2025-11-20,Clinic Plus Shampoo 340ml,Personal Care,all,160,115,2.75,155.6,0,,0,14,14,15,15,2334.0
+2025-11-21,Clinic Plus Shampoo 340ml,Personal Care,all,160,115,0.0,160.0,0,,0,14,14,16,15,2400.0
+2025-11-15,Coca Cola 500ml,Beverages,summer,40,25,0.0,40.0,0,,1,33,34,32,32,1280.0
+2025-11-16,Coca Cola 500ml,Beverages,summer,40,25,3.25,38.7,0,,1,34,35,33,33,1277.1000000000001
+2025-11-17,Coca Cola 500ml,Beverages,summer,40,25,0.0,40.0,0,,0,33,34,32,32,1280.0
+2025-11-18,Coca Cola 500ml,Beverages,summer,40,25,3.25,38.7,0,,0,34,35,32,32,1238.4
+2025-11-19,Coca Cola 500ml,Beverages,summer,40,25,0.0,40.0,0,,0,33,34,31,32,1280.0
+2025-11-20,Coca Cola 500ml,Beverages,summer,40,25,0.0,40.0,0,,0,33,34,32,32,1280.0
+2025-11-21,Coca Cola 500ml,Beverages,summer,40,25,0.0,40.0,0,,0,33,34,33,33,1320.0
+2025-11-15,Colgate Toothpaste 200g,Personal Care,all,110,78,0.0,110.0,0,,1,26,27,28,28,3080.0
+2025-11-16,Colgate Toothpaste 200g,Personal Care,all,110,78,0.0,110.0,0,,1,26,27,28,28,3080.0
+2025-11-17,Colgate Toothpaste 200g,Personal Care,all,110,78,0.0,110.0,0,,0,26,26,26,26,2860.0
+2025-11-18,Colgate Toothpaste 200g,Personal Care,all,110,78,0.0,110.0,0,,0,26,26,26,26,2860.0
+2025-11-19,Colgate Toothpaste 200g,Personal Care,all,110,78,12.0,96.8,0,,0,27,27,28,28,2710.4
+2025-11-20,Colgate Toothpaste 200g,Personal Care,all,110,78,2.25,107.525,0,,0,26,27,28,27,2903.175
+2025-11-21,Colgate Toothpaste 200g,Personal Care,all,110,78,0.0,110.0,0,,0,26,27,29,28,3080.0
+2025-11-15,Dettol Soap 125g 4-pack,Personal Care,all,140,100,0.0,140.0,0,,1,9,9,10,9,1260.0
+2025-11-16,Dettol Soap 125g 4-pack,Personal Care,all,140,100,0.0,140.0,0,,1,9,9,10,10,1400.0
+2025-11-17,Dettol Soap 125g 4-pack,Personal Care,all,140,100,0.0,140.0,0,,0,9,9,9,9,1260.0
+2025-11-18,Dettol Soap 125g 4-pack,Personal Care,all,140,100,0.0,140.0,0,,0,9,9,9,9,1260.0
+2025-11-19,Dettol Soap 125g 4-pack,Personal Care,all,140,100,12.0,123.2,0,,0,9,10,10,10,1232.0
+2025-11-20,Dettol Soap 125g 4-pack,Personal Care,all,140,100,2.75,136.15,0,,0,9,10,10,10,1361.5
+2025-11-21,Dettol Soap 125g 4-pack,Personal Care,all,140,100,0.0,140.0,0,,0,9,9,10,10,1400.0
+2025-11-15,Dove Soap 100g 3-pack,Personal Care,all,180,130,0.0,180.0,0,,1,9,7,8,8,1440.0
+2025-11-16,Dove Soap 100g 3-pack,Personal Care,all,180,130,0.0,180.0,0,,1,9,8,8,8,1440.0
+2025-11-17,Dove Soap 100g 3-pack,Personal Care,all,180,130,0.0,180.0,0,,0,9,8,8,8,1440.0
+2025-11-18,Dove Soap 100g 3-pack,Personal Care,all,180,130,0.0,180.0,0,,0,9,8,8,8,1440.0
+2025-11-19,Dove Soap 100g 3-pack,Personal Care,all,180,130,12.0,158.4,0,,0,9,8,8,8,1267.2
+2025-11-20,Dove Soap 100g 3-pack,Personal Care,all,180,130,3.0,174.6,0,,0,9,8,8,8,1396.8
+2025-11-21,Dove Soap 100g 3-pack,Personal Care,all,180,130,0.0,180.0,0,,0,9,8,9,9,1620.0
+2025-11-15,Everest Garam Masala 100g,Staples,winter,85,60,0.0,85.0,0,,1,15,13,15,15,1275.0
+2025-11-16,Everest Garam Masala 100g,Staples,winter,85,60,0.0,85.0,0,,1,15,13,15,15,1275.0
+2025-11-17,Everest Garam Masala 100g,Staples,winter,85,60,0.0,85.0,0,,0,14,13,13,14,1190.0
+2025-11-18,Everest Garam Masala 100g,Staples,winter,85,60,0.0,85.0,0,,0,14,13,14,14,1190.0
+2025-11-19,Everest Garam Masala 100g,Staples,winter,85,60,0.0,85.0,0,,0,14,13,14,14,1190.0
+2025-11-20,Everest Garam Masala 100g,Staples,winter,85,60,0.0,85.0,0,,0,14,13,14,14,1190.0
+2025-11-21,Everest Garam Masala 100g,Staples,winter,85,60,2.0,83.3,0,,0,15,13,16,15,1249.5
+2025-11-15,Fortune Sunflower Oil 1L,Staples,all,180,130,0.0,180.0,0,,1,22,22,21,22,3960.0
+2025-11-16,Fortune Sunflower Oil 1L,Staples,all,180,130,0.0,180.0,0,,1,22,22,21,22,3960.0
+2025-11-17,Fortune Sunflower Oil 1L,Staples,all,180,130,0.0,180.0,0,,0,22,22,20,21,3780.0
+2025-11-18,Fortune Sunflower Oil 1L,Staples,all,180,130,0.0,180.0,0,,0,22,22,20,20,3600.0
+2025-11-19,Fortune Sunflower Oil 1L,Staples,all,180,130,0.0,180.0,0,,0,22,22,20,21,3780.0
+2025-11-20,Fortune Sunflower Oil 1L,Staples,all,180,130,0.0,180.0,0,,0,22,22,21,21,3780.0
+2025-11-21,Fortune Sunflower Oil 1L,Staples,all,180,130,2.75,175.05,0,,0,22,22,22,22,3851.1000000000004
+2025-11-15,Frooti Mango Drink 200ml,Beverages,summer,20,13,0.0,20.0,0,,1,24,25,24,24,480.0
+2025-11-16,Frooti Mango Drink 200ml,Beverages,summer,20,13,2.25,19.55,0,,1,24,25,25,24,469.20000000000005
+2025-11-17,Frooti Mango Drink 200ml,Beverages,summer,20,13,0.0,20.0,0,,0,24,24,24,24,480.0
+2025-11-18,Frooti Mango Drink 200ml,Beverages,summer,20,13,3.25,19.35,0,,0,24,24,23,24,464.40000000000003
+2025-11-19,Frooti Mango Drink 200ml,Beverages,summer,20,13,0.0,20.0,0,,0,24,24,23,23,460.0
+2025-11-20,Frooti Mango Drink 200ml,Beverages,summer,20,13,0.0,20.0,0,,0,24,24,24,24,480.0
+2025-11-21,Frooti Mango Drink 200ml,Beverages,summer,20,13,0.0,20.0,0,,0,24,25,25,25,500.0
+2025-11-15,Gillette Mach3 Razor 1pc,Personal Care,all,180,130,0.0,180.0,0,,1,8,8,7,8,1440.0
+2025-11-16,Gillette Mach3 Razor 1pc,Personal Care,all,180,130,0.0,180.0,0,,1,8,9,8,8,1440.0
+2025-11-17,Gillette Mach3 Razor 1pc,Personal Care,all,180,130,0.0,180.0,0,,0,9,9,7,7,1260.0
+2025-11-18,Gillette Mach3 Razor 1pc,Personal Care,all,180,130,0.0,180.0,0,,0,9,9,7,7,1260.0
+2025-11-19,Gillette Mach3 Razor 1pc,Personal Care,all,180,130,12.0,158.4,0,,0,9,9,8,8,1267.2
+2025-11-20,Gillette Mach3 Razor 1pc,Personal Care,all,180,130,3.0,174.6,0,,0,9,9,8,8,1396.8
+2025-11-21,Gillette Mach3 Razor 1pc,Personal Care,all,180,130,0.0,180.0,0,,0,9,9,8,8,1440.0
+2025-11-15,Haldiram Bhujia 200g,Snacks,all,50,35,2.75,48.625,0,,1,24,32,25,25,1215.625
+2025-11-16,Haldiram Bhujia 200g,Snacks,all,50,35,0.0,50.0,0,,1,24,32,24,24,1200.0
+2025-11-17,Haldiram Bhujia 200g,Snacks,all,50,35,0.0,50.0,0,,0,24,32,24,24,1200.0
+2025-11-18,Haldiram Bhujia 200g,Snacks,all,50,35,0.0,50.0,0,,0,24,32,23,23,1150.0
+2025-11-19,Haldiram Bhujia 200g,Snacks,all,50,35,2.0,49.0,0,,0,24,32,24,24,1176.0
+2025-11-20,Haldiram Bhujia 200g,Snacks,all,50,35,0.0,50.0,0,,0,24,32,24,24,1200.0
+2025-11-21,Haldiram Bhujia 200g,Snacks,all,50,35,0.0,50.0,0,,0,24,32,25,25,1250.0
+2025-11-15,Haldiram Namkeen Mix 200g,Snacks,all,60,42,2.0,58.8,0,,1,18,30,21,20,1176.0
+2025-11-16,Haldiram Namkeen Mix 200g,Snacks,all,60,42,0.0,60.0,0,,1,18,29,21,20,1200.0
+2025-11-17,Haldiram Namkeen Mix 200g,Snacks,all,60,42,0.0,60.0,0,,0,18,28,19,19,1140.0
+2025-11-18,Haldiram Namkeen Mix 200g,Snacks,all,60,42,0.0,60.0,0,,0,18,29,19,19,1140.0
+2025-11-19,Haldiram Namkeen Mix 200g,Snacks,all,60,42,2.5,58.5,0,,0,18,29,20,19,1111.5
+2025-11-20,Haldiram Namkeen Mix 200g,Snacks,all,60,42,0.0,60.0,0,,0,18,29,20,19,1140.0
+2025-11-21,Haldiram Namkeen Mix 200g,Snacks,all,60,42,0.0,60.0,0,,0,18,29,21,20,1200.0
+2025-11-15,Himalaya Face Wash 100ml,Personal Care,summer,140,100,0.0,140.0,0,,1,14,14,13,13,1820.0
+2025-11-16,Himalaya Face Wash 100ml,Personal Care,summer,140,100,0.0,140.0,0,,1,14,14,13,13,1820.0
+2025-11-17,Himalaya Face Wash 100ml,Personal Care,summer,140,100,0.0,140.0,0,,0,14,14,12,12,1680.0
+2025-11-18,Himalaya Face Wash 100ml,Personal Care,summer,140,100,0.0,140.0,0,,0,14,14,12,13,1820.0
+2025-11-19,Himalaya Face Wash 100ml,Personal Care,summer,140,100,12.0,123.2,0,,0,14,14,13,13,1601.6000000000001
+2025-11-20,Himalaya Face Wash 100ml,Personal Care,summer,140,100,2.5,136.5,0,,0,14,14,13,13,1774.5
+2025-11-21,Himalaya Face Wash 100ml,Personal Care,summer,140,100,0.0,140.0,0,,0,14,14,13,14,1960.0
+2025-11-15,India Gate Basmati Rice 5kg,Staples,all,450,320,0.0,450.0,0,,1,11,13,12,12,5400.0
+2025-11-16,India Gate Basmati Rice 5kg,Staples,all,450,320,0.0,450.0,0,,1,11,13,12,12,5400.0
+2025-11-17,India Gate Basmati Rice 5kg,Staples,all,450,320,0.0,450.0,0,,0,11,13,11,11,4950.0
+2025-11-18,India Gate Basmati Rice 5kg,Staples,all,450,320,0.0,450.0,0,,0,11,13,11,11,4950.0
+2025-11-19,India Gate Basmati Rice 5kg,Staples,all,450,320,0.0,450.0,0,,0,11,13,11,11,4950.0
+2025-11-20,India Gate Basmati Rice 5kg,Staples,all,450,320,0.0,450.0,0,,0,11,13,11,11,4950.0
+2025-11-21,India Gate Basmati Rice 5kg,Staples,all,450,320,3.5,434.25,0,,0,11,13,13,12,5211.0
+2025-11-15,India Gate Sabudana 500g,Staples,all,80,55,0.0,80.0,0,,1,9,11,9,9,720.0
+2025-11-16,India Gate Sabudana 500g,Staples,all,80,55,0.0,80.0,0,,1,9,11,9,9,720.0
+2025-11-17,India Gate Sabudana 500g,Staples,all,80,55,0.0,80.0,0,,0,9,11,8,8,640.0
+2025-11-18,India Gate Sabudana 500g,Staples,all,80,55,0.0,80.0,0,,0,9,11,8,8,640.0
+2025-11-19,India Gate Sabudana 500g,Staples,all,80,55,0.0,80.0,0,,0,9,11,8,8,640.0
+2025-11-20,India Gate Sabudana 500g,Staples,all,80,55,0.0,80.0,0,,0,9,11,9,9,720.0
+2025-11-21,India Gate Sabudana 500g,Staples,all,80,55,2.25,78.2,0,,0,9,11,10,9,703.8000000000001
+2025-11-15,KitKat Chocolate 37g,Snacks,winter,40,28,2.75,38.9,0,,1,25,26,27,26,1011.4
+2025-11-16,KitKat Chocolate 37g,Snacks,winter,40,28,0.0,40.0,0,,1,25,26,27,26,1040.0
+2025-11-17,KitKat Chocolate 37g,Snacks,winter,40,28,0.0,40.0,0,,0,25,25,26,26,1040.0
+2025-11-18,KitKat Chocolate 37g,Snacks,winter,40,28,0.0,40.0,0,,0,24,25,25,25,1000.0
+2025-11-19,KitKat Chocolate 37g,Snacks,winter,40,28,2.75,38.9,0,,0,25,25,26,25,972.5
+2025-11-20,KitKat Chocolate 37g,Snacks,winter,40,28,0.0,40.0,0,,0,24,25,26,26,1040.0
+2025-11-21,KitKat Chocolate 37g,Snacks,winter,40,28,0.0,40.0,0,,0,25,26,27,27,1080.0
+2025-11-15,Kurkure 60g Masala Munch,Snacks,all,20,13,3.5,19.3,0,,1,37,43,38,38,733.4
+2025-11-16,Kurkure 60g Masala Munch,Snacks,all,20,13,0.0,20.0,0,,1,37,42,37,37,740.0
+2025-11-17,Kurkure 60g Masala Munch,Snacks,all,20,13,0.0,20.0,0,,0,37,42,35,36,720.0
+2025-11-18,Kurkure 60g Masala Munch,Snacks,all,20,13,0.0,20.0,0,,0,37,42,35,36,720.0
+2025-11-19,Kurkure 60g Masala Munch,Snacks,all,20,13,3.25,19.35,0,,0,37,42,36,37,715.95
+2025-11-20,Kurkure 60g Masala Munch,Snacks,all,20,13,0.0,20.0,0,,0,37,42,37,37,740.0
+2025-11-21,Kurkure 60g Masala Munch,Snacks,all,20,13,0.0,20.0,0,,0,37,42,37,37,740.0
+2025-11-15,Lays Chips 52g Classic Salted,Snacks,all,20,13,3.25,19.35,0,,1,38,42,37,37,715.95
+2025-11-16,Lays Chips 52g Classic Salted,Snacks,all,20,13,0.0,20.0,0,,1,38,41,36,37,740.0
+2025-11-17,Lays Chips 52g Classic Salted,Snacks,all,20,13,0.0,20.0,0,,0,38,41,35,36,720.0
+2025-11-18,Lays Chips 52g Classic Salted,Snacks,all,20,13,0.0,20.0,0,,0,38,41,35,36,720.0
+2025-11-19,Lays Chips 52g Classic Salted,Snacks,all,20,13,3.5,19.3,0,,0,38,41,36,36,694.8000000000001
+2025-11-20,Lays Chips 52g Classic Salted,Snacks,all,20,13,0.0,20.0,0,,0,38,41,36,36,720.0
+2025-11-21,Lays Chips 52g Classic Salted,Snacks,all,20,13,0.0,20.0,0,,0,38,41,37,37,740.0
+2025-11-15,MDH Chana Masala 100g,Staples,all,70,50,0.0,70.0,0,,1,11,14,11,11,770.0
+2025-11-16,MDH Chana Masala 100g,Staples,all,70,50,0.0,70.0,0,,1,11,14,11,11,770.0
+2025-11-17,MDH Chana Masala 100g,Staples,all,70,50,0.0,70.0,0,,0,11,14,10,10,700.0
+2025-11-18,MDH Chana Masala 100g,Staples,all,70,50,0.0,70.0,0,,0,11,14,10,10,700.0
+2025-11-19,MDH Chana Masala 100g,Staples,all,70,50,0.0,70.0,0,,0,11,14,10,10,700.0
+2025-11-20,MDH Chana Masala 100g,Staples,all,70,50,0.0,70.0,0,,0,11,14,10,10,700.0
+2025-11-21,MDH Chana Masala 100g,Staples,all,70,50,3.25,67.72500000000001,0,,0,11,14,11,11,744.9750000000001
+2025-11-15,Maggi Noodles 280g 4-pack,Snacks,monsoon,48,34,2.5,46.8,0,,1,44,44,45,45,2106.0
+2025-11-16,Maggi Noodles 280g 4-pack,Snacks,monsoon,48,34,0.0,48.0,0,,1,44,43,45,45,2160.0
+2025-11-17,Maggi Noodles 280g 4-pack,Snacks,monsoon,48,34,0.0,48.0,0,,0,44,44,43,43,2064.0
+2025-11-18,Maggi Noodles 280g 4-pack,Snacks,monsoon,48,34,0.0,48.0,0,,0,44,44,43,43,2064.0
+2025-11-19,Maggi Noodles 280g 4-pack,Snacks,monsoon,48,34,2.75,46.68,0,,0,44,44,44,44,2053.92
+2025-11-20,Maggi Noodles 280g 4-pack,Snacks,monsoon,48,34,0.0,48.0,0,,0,44,44,45,44,2112.0
+2025-11-21,Maggi Noodles 280g 4-pack,Snacks,monsoon,48,34,0.0,48.0,0,,0,44,43,45,45,2160.0
+2025-11-15,Mother Dairy Curd 400g,Dairy,summer,30,20,0.0,30.0,0,,1,52,51,49,50,1500.0
+2025-11-16,Mother Dairy Curd 400g,Dairy,summer,30,20,0.0,30.0,0,,1,52,51,50,50,1500.0
+2025-11-17,Mother Dairy Curd 400g,Dairy,summer,30,20,3.5,28.95,0,,0,52,51,49,50,1447.5
+2025-11-18,Mother Dairy Curd 400g,Dairy,summer,30,20,0.0,30.0,0,,0,52,51,48,49,1470.0
+2025-11-19,Mother Dairy Curd 400g,Dairy,summer,30,20,0.0,30.0,0,,0,52,51,49,49,1470.0
+2025-11-20,Mother Dairy Curd 400g,Dairy,summer,30,20,0.0,30.0,0,,0,52,51,49,50,1500.0
+2025-11-21,Mother Dairy Curd 400g,Dairy,summer,30,20,0.0,30.0,0,,0,52,51,50,51,1530.0
+2025-11-15,Nandini Paneer 200g,Dairy,winter,80,58,0.0,80.0,0,,1,21,21,21,21,1680.0
+2025-11-16,Nandini Paneer 200g,Dairy,winter,80,58,0.0,80.0,0,,1,21,21,21,21,1680.0
+2025-11-17,Nandini Paneer 200g,Dairy,winter,80,58,2.75,77.8,0,,0,21,21,20,20,1556.0
+2025-11-18,Nandini Paneer 200g,Dairy,winter,80,58,0.0,80.0,0,,0,21,21,19,20,1600.0
+2025-11-19,Nandini Paneer 200g,Dairy,winter,80,58,0.0,80.0,0,,0,21,21,20,20,1600.0
+2025-11-20,Nandini Paneer 200g,Dairy,winter,80,58,0.0,80.0,0,,0,21,21,20,20,1600.0
+2025-11-21,Nandini Paneer 200g,Dairy,winter,80,58,0.0,80.0,0,,0,21,21,22,21,1680.0
+2025-11-15,Nescafe Coffee 50g,Beverages,winter,120,85,0.0,120.0,0,,1,21,30,23,23,2760.0
+2025-11-16,Nescafe Coffee 50g,Beverages,winter,120,85,2.0,117.6,0,,1,21,30,23,23,2704.7999999999997
+2025-11-17,Nescafe Coffee 50g,Beverages,winter,120,85,0.0,120.0,0,,0,21,30,22,22,2640.0
+2025-11-18,Nescafe Coffee 50g,Beverages,winter,120,85,2.5,117.0,0,,0,21,30,22,22,2574.0
+2025-11-19,Nescafe Coffee 50g,Beverages,winter,120,85,0.0,120.0,0,,0,20,30,22,22,2640.0
+2025-11-20,Nescafe Coffee 50g,Beverages,winter,120,85,0.0,120.0,0,,0,20,30,23,22,2640.0
+2025-11-21,Nescafe Coffee 50g,Beverages,winter,120,85,0.0,120.0,0,,0,21,30,24,23,2760.0
+2025-11-15,Nestle Fresh Cream 200ml,Dairy,winter,90,65,0.0,90.0,0,,1,14,15,14,14,1260.0
+2025-11-16,Nestle Fresh Cream 200ml,Dairy,winter,90,65,0.0,90.0,0,,1,14,15,14,14,1260.0
+2025-11-17,Nestle Fresh Cream 200ml,Dairy,winter,90,65,3.0,87.3,0,,0,14,15,13,13,1134.8999999999999
+2025-11-18,Nestle Fresh Cream 200ml,Dairy,winter,90,65,0.0,90.0,0,,0,14,15,13,13,1170.0
+2025-11-19,Nestle Fresh Cream 200ml,Dairy,winter,90,65,0.0,90.0,0,,0,14,15,13,13,1170.0
+2025-11-20,Nestle Fresh Cream 200ml,Dairy,winter,90,65,0.0,90.0,0,,0,14,15,14,14,1260.0
+2025-11-21,Nestle Fresh Cream 200ml,Dairy,winter,90,65,0.0,90.0,0,,0,14,15,15,15,1350.0
+2025-11-15,Parle-G Biscuits 200g,Snacks,all,25,16,2.5,24.375,0,,1,62,59,55,57,1389.375
+2025-11-16,Parle-G Biscuits 200g,Snacks,all,25,16,0.0,25.0,0,,1,62,59,55,57,1425.0
+2025-11-17,Parle-G Biscuits 200g,Snacks,all,25,16,0.0,25.0,0,,0,60,58,54,56,1400.0
+2025-11-18,Parle-G Biscuits 200g,Snacks,all,25,16,0.0,25.0,0,,0,62,58,54,56,1400.0
+2025-11-19,Parle-G Biscuits 200g,Snacks,all,25,16,3.5,24.125,0,,0,62,58,55,57,1375.125
+2025-11-20,Parle-G Biscuits 200g,Snacks,all,25,16,0.0,25.0,0,,0,62,59,56,57,1425.0
+2025-11-21,Parle-G Biscuits 200g,Snacks,all,25,16,0.0,25.0,0,,0,62,59,56,57,1425.0
+2025-11-15,Pepsi 500ml,Beverages,summer,40,25,0.0,40.0,0,,1,31,33,30,31,1240.0
+2025-11-16,Pepsi 500ml,Beverages,summer,40,25,3.0,38.8,0,,1,31,33,30,30,1164.0
+2025-11-17,Pepsi 500ml,Beverages,summer,40,25,0.0,40.0,0,,0,31,32,29,30,1200.0
+2025-11-18,Pepsi 500ml,Beverages,summer,40,25,2.0,39.2,0,,0,31,33,29,29,1136.8000000000002
+2025-11-19,Pepsi 500ml,Beverages,summer,40,25,0.0,40.0,0,,0,31,33,29,30,1200.0
+2025-11-20,Pepsi 500ml,Beverages,summer,40,25,0.0,40.0,0,,0,31,33,30,30,1200.0
+2025-11-21,Pepsi 500ml,Beverages,summer,40,25,0.0,40.0,0,,0,31,33,31,31,1240.0
+2025-11-15,Ponds Face Cream 50g,Personal Care,winter,150,105,0.0,150.0,0,,1,9,9,8,8,1200.0
+2025-11-16,Ponds Face Cream 50g,Personal Care,winter,150,105,0.0,150.0,0,,1,9,9,8,9,1350.0
+2025-11-17,Ponds Face Cream 50g,Personal Care,winter,150,105,0.0,150.0,0,,0,9,9,8,8,1200.0
+2025-11-18,Ponds Face Cream 50g,Personal Care,winter,150,105,0.0,150.0,0,,0,9,9,8,8,1200.0
+2025-11-19,Ponds Face Cream 50g,Personal Care,winter,150,105,12.0,132.0,0,,0,9,10,9,9,1188.0
+2025-11-20,Ponds Face Cream 50g,Personal Care,winter,150,105,3.5,144.75,0,,0,9,9,9,9,1302.75
+2025-11-21,Ponds Face Cream 50g,Personal Care,winter,150,105,0.0,150.0,0,,0,9,9,9,9,1350.0
+2025-11-15,Real Juice 1L Mixed Fruit,Beverages,summer,120,85,0.0,120.0,0,,1,14,15,14,14,1680.0
+2025-11-16,Real Juice 1L Mixed Fruit,Beverages,summer,120,85,2.25,117.30000000000001,0,,1,14,15,14,14,1642.2000000000003
+2025-11-17,Real Juice 1L Mixed Fruit,Beverages,summer,120,85,0.0,120.0,0,,0,13,15,13,13,1560.0
+2025-11-18,Real Juice 1L Mixed Fruit,Beverages,summer,120,85,2.75,116.7,0,,0,13,15,13,13,1517.1000000000001
+2025-11-19,Real Juice 1L Mixed Fruit,Beverages,summer,120,85,0.0,120.0,0,,0,13,15,13,13,1560.0
+2025-11-20,Real Juice 1L Mixed Fruit,Beverages,summer,120,85,0.0,120.0,0,,0,13,15,13,13,1560.0
+2025-11-21,Real Juice 1L Mixed Fruit,Beverages,summer,120,85,0.0,120.0,0,,0,14,15,14,14,1680.0
+2025-11-15,Red Bull Energy Drink 250ml,Beverages,all,110,75,0.0,110.0,0,,1,12,11,12,12,1320.0
+2025-11-16,Red Bull Energy Drink 250ml,Beverages,all,110,75,2.0,107.8,0,,1,12,12,12,12,1293.6
+2025-11-17,Red Bull Energy Drink 250ml,Beverages,all,110,75,0.0,110.0,0,,0,12,11,11,11,1210.0
+2025-11-18,Red Bull Energy Drink 250ml,Beverages,all,110,75,2.75,106.97500000000001,0,,0,12,11,11,11,1176.7250000000001
+2025-11-19,Red Bull Energy Drink 250ml,Beverages,all,110,75,0.0,110.0,0,,0,12,11,11,11,1210.0
+2025-11-20,Red Bull Energy Drink 250ml,Beverages,all,110,75,0.0,110.0,0,,0,12,11,12,12,1320.0
+2025-11-21,Red Bull Energy Drink 250ml,Beverages,all,110,75,0.0,110.0,0,,0,12,11,13,12,1320.0
+2025-11-15,Saffola Oats 1kg,Staples,all,200,145,0.0,200.0,0,,1,9,8,8,8,1600.0
+2025-11-16,Saffola Oats 1kg,Staples,all,200,145,0.0,200.0,0,,1,9,8,8,8,1600.0
+2025-11-17,Saffola Oats 1kg,Staples,all,200,145,0.0,200.0,0,,0,9,8,8,8,1600.0
+2025-11-18,Saffola Oats 1kg,Staples,all,200,145,0.0,200.0,0,,0,9,8,7,8,1600.0
+2025-11-19,Saffola Oats 1kg,Staples,all,200,145,0.0,200.0,0,,0,9,8,7,8,1600.0
+2025-11-20,Saffola Oats 1kg,Staples,all,200,145,0.0,200.0,0,,0,9,8,8,8,1600.0
+2025-11-21,Saffola Oats 1kg,Staples,all,200,145,3.25,193.5,0,,0,9,8,9,9,1741.5
+2025-11-15,Tata Salt 1kg,Staples,all,22,15,0.0,22.0,0,,1,18,26,20,19,418.0
+2025-11-16,Tata Salt 1kg,Staples,all,22,15,0.0,22.0,0,,1,18,27,20,19,418.0
+2025-11-17,Tata Salt 1kg,Staples,all,22,15,0.0,22.0,0,,0,18,26,19,19,418.0
+2025-11-18,Tata Salt 1kg,Staples,all,22,15,0.0,22.0,0,,0,18,26,19,18,396.0
+2025-11-19,Tata Salt 1kg,Staples,all,22,15,0.0,22.0,0,,0,18,26,19,18,396.0
+2025-11-20,Tata Salt 1kg,Staples,all,22,15,0.0,22.0,0,,0,18,26,19,19,418.0
+2025-11-21,Tata Salt 1kg,Staples,all,22,15,2.25,21.505000000000003,0,,0,18,26,20,20,430.1
+2025-11-15,Tata Sampann Toor Dal 1kg,Staples,all,140,100,0.0,140.0,0,,1,17,15,17,17,2380.0
+2025-11-16,Tata Sampann Toor Dal 1kg,Staples,all,140,100,0.0,140.0,0,,1,17,15,17,17,2380.0
+2025-11-17,Tata Sampann Toor Dal 1kg,Staples,all,140,100,0.0,140.0,0,,0,17,15,16,16,2240.0
+2025-11-18,Tata Sampann Toor Dal 1kg,Staples,all,140,100,0.0,140.0,0,,0,17,15,16,16,2240.0
+2025-11-19,Tata Sampann Toor Dal 1kg,Staples,all,140,100,0.0,140.0,0,,0,17,15,16,16,2240.0
+2025-11-20,Tata Sampann Toor Dal 1kg,Staples,all,140,100,0.0,140.0,0,,0,17,15,17,17,2380.0
+2025-11-21,Tata Sampann Toor Dal 1kg,Staples,all,140,100,2.25,136.85,0,,0,17,15,18,18,2463.2999999999997
+2025-11-15,Tata Tea Gold 250g,Beverages,winter,150,110,0.0,150.0,0,,1,42,43,40,40,6000.0
+2025-11-16,Tata Tea Gold 250g,Beverages,winter,150,110,2.0,147.0,0,,1,42,43,40,40,5880.0
+2025-11-17,Tata Tea Gold 250g,Beverages,winter,150,110,0.0,150.0,0,,0,41,43,38,39,5850.0
+2025-11-18,Tata Tea Gold 250g,Beverages,winter,150,110,2.25,146.625,0,,0,41,43,39,39,5718.375
+2025-11-19,Tata Tea Gold 250g,Beverages,winter,150,110,0.0,150.0,0,,0,42,43,39,40,6000.0
+2025-11-20,Tata Tea Gold 250g,Beverages,winter,150,110,0.0,150.0,0,,0,42,43,40,41,6150.0
+2025-11-21,Tata Tea Gold 250g,Beverages,winter,150,110,0.0,150.0,0,,0,42,43,41,41,6150.0
+2025-11-15,Thums Up 500ml,Beverages,summer,40,25,0.0,40.0,0,,1,16,20,18,17,680.0
+2025-11-16,Thums Up 500ml,Beverages,summer,40,25,3.0,38.8,0,,1,16,21,18,18,698.4
+2025-11-17,Thums Up 500ml,Beverages,summer,40,25,0.0,40.0,0,,0,16,19,17,17,680.0
+2025-11-18,Thums Up 500ml,Beverages,summer,40,25,2.25,39.1,0,,0,16,20,17,17,664.7
+2025-11-19,Thums Up 500ml,Beverages,summer,40,25,0.0,40.0,0,,0,16,20,17,17,680.0
+2025-11-20,Thums Up 500ml,Beverages,summer,40,25,0.0,40.0,0,,0,16,20,17,17,680.0
+2025-11-21,Thums Up 500ml,Beverages,summer,40,25,0.0,40.0,0,,0,16,20,18,18,720.0
+2025-11-15,Too Yumm Chips 54g,Snacks,all,30,20,2.75,29.175,0,,1,18,26,20,19,554.325
+2025-11-16,Too Yumm Chips 54g,Snacks,all,30,20,0.0,30.0,0,,1,18,26,20,19,570.0
+2025-11-17,Too Yumm Chips 54g,Snacks,all,30,20,0.0,30.0,0,,0,18,26,19,18,540.0
+2025-11-18,Too Yumm Chips 54g,Snacks,all,30,20,0.0,30.0,0,,0,18,26,18,18,540.0
+2025-11-19,Too Yumm Chips 54g,Snacks,all,30,20,2.75,29.175,0,,0,18,26,19,19,554.325
+2025-11-20,Too Yumm Chips 54g,Snacks,all,30,20,0.0,30.0,0,,0,18,26,19,19,570.0
+2025-11-21,Too Yumm Chips 54g,Snacks,all,30,20,0.0,30.0,0,,0,18,26,20,20,600.0
+2025-11-15,Tropicana Orange Juice 1L,Beverages,all,130,95,0.0,130.0,0,,1,20,20,19,19,2470.0
+2025-11-16,Tropicana Orange Juice 1L,Beverages,all,130,95,3.5,125.45,0,,1,20,20,20,20,2509.0
+2025-11-17,Tropicana Orange Juice 1L,Beverages,all,130,95,0.0,130.0,0,,0,20,19,18,18,2340.0
+2025-11-18,Tropicana Orange Juice 1L,Beverages,all,130,95,2.75,126.425,0,,0,20,20,18,18,2275.65
+2025-11-19,Tropicana Orange Juice 1L,Beverages,all,130,95,0.0,130.0,0,,0,20,19,18,18,2340.0
+2025-11-20,Tropicana Orange Juice 1L,Beverages,all,130,95,0.0,130.0,0,,0,20,19,19,19,2470.0
+2025-11-21,Tropicana Orange Juice 1L,Beverages,all,130,95,0.0,130.0,0,,0,20,19,20,20,2600.0
+2025-11-15,Vicks Vaporub 50ml,Personal Care,winter,120,85,0.0,120.0,0,,1,12,11,13,13,1560.0
+2025-11-16,Vicks Vaporub 50ml,Personal Care,winter,120,85,0.0,120.0,0,,1,12,11,13,13,1560.0
+2025-11-17,Vicks Vaporub 50ml,Personal Care,winter,120,85,0.0,120.0,0,,0,12,11,12,12,1440.0
+2025-11-18,Vicks Vaporub 50ml,Personal Care,winter,120,85,0.0,120.0,0,,0,12,11,12,12,1440.0
+2025-11-19,Vicks Vaporub 50ml,Personal Care,winter,120,85,12.0,105.6,0,,0,12,11,13,13,1372.8
+2025-11-20,Vicks Vaporub 50ml,Personal Care,winter,120,85,3.5,115.8,0,,0,12,11,13,13,1505.3999999999999
+2025-11-21,Vicks Vaporub 50ml,Personal Care,winter,120,85,0.0,120.0,0,,0,12,11,13,13,1560.0
