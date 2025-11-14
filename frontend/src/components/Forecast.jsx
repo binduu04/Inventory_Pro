@@ -2,8 +2,11 @@ import { useState, useEffect } from "react";
 import { TrendingUp, Loader2, Download, AlertCircle, CheckCircle, AlertTriangle, Package, Search, Filter, ShoppingCart, BarChart3 } from "lucide-react";
 import { supabase } from "../config/supabase";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import ReorderModal from "./ReorderModal";
+import { useAuth } from "../context/AuthContext";
 
 const Forecast = () => {
+  const { session } = useAuth();
   const [loading, setLoading] = useState(false);
   const [forecastData, setForecastData] = useState([]);
   const [reorderData, setReorderData] = useState([]);
@@ -11,8 +14,36 @@ const Forecast = () => {
   const [mode, setMode] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterStatus, setFilterStatus] = useState("all"); // all, red, yellow, green
+  const [filterStatus, setFilterStatus] = useState("all");
   const [filterCategory, setFilterCategory] = useState("all");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedReorderProduct, setSelectedReorderProduct] = useState(null);
+  const [pendingOrders, setPendingOrders] = useState(new Set());
+
+  useEffect(() => {
+    fetchPendingPurchaseOrders();
+  }, [session]);
+
+  const fetchPendingPurchaseOrders = async () => {
+    if (!session?.access_token) return;
+    try {
+      const response = await fetch("http://localhost:5000/api/orders/purchase-orders", {
+        headers: { "Authorization": `Bearer ${session.access_token}` }
+      });
+      const data = await response.json();
+      if (data.success && data.data) {
+        const placedProductIds = new Set();
+        data.data.forEach(po => {
+          if (po.status === 'placed' && po.items) {
+            po.items.forEach(item => placedProductIds.add(item.product_id));
+          }
+        });
+        setPendingOrders(placedProductIds);
+      }
+    } catch (error) {
+      console.error("Error fetching pending orders:", error);
+    }
+  };
 
   const handleForecast = async (type) => {
     setLoading(true);
@@ -22,11 +53,23 @@ const Forecast = () => {
     setReorderSummary(null);
 
     try {
+      // Refresh session to ensure fresh token
+      const { data: { session: freshSession }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError || !freshSession) {
+        console.error('❌ Session error:', sessionError);
+        alert('Session expired. Please refresh the page.');
+        setLoading(false);
+        return;
+      }
+
+      console.log('🔑 Using fresh session token for forecast');
+
       if (type === "manual") {
-        // Step 1: Fetch current stock from Supabase
+        // Step 1: Fetch product details from Supabase
         const { data: products, error } = await supabase
           .from('products')
-          .select('product_name, current_stock');
+          .select('id, product_name, current_stock, supplier_id, cost_price');
         
         if (error) {
           console.error("Error fetching current stock:", error);
@@ -35,7 +78,18 @@ const Forecast = () => {
           return;
         }
 
-        // Convert to dictionary format
+        // Step 1.5: Fetch all suppliers
+        const { data: suppliers, error: supplierError } = await supabase
+          .from('suppliers')
+          .select('*');
+        
+        if (supplierError) {
+          console.error("Error fetching suppliers:", supplierError);
+        }
+
+        console.log(`✅ Fetched ${products.length} products and ${suppliers?.length || 0} suppliers`);
+
+        // Convert to dictionary for forecast API
         const currentStock = {};
         products.forEach(p => {
           currentStock[p.product_name] = p.current_stock || 0;
@@ -48,6 +102,7 @@ const Forecast = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${freshSession.access_token}`,
           },
           body: JSON.stringify({
             num_days: 7,
@@ -64,8 +119,30 @@ const Forecast = () => {
           const transformedForecast = transformForecastData(data.forecast);
           setForecastData(transformedForecast);
           
-          // Set reorder data
-          setReorderData(data.reorder || []);
+          // Enrich reorder data with product details AND supplier info
+          const enrichedReorderData = (data.reorder || []).map(item => {
+            const productInfo = products.find(p => p.product_name === item.product_name);
+            const supplierInfo = suppliers?.find(s => s.id === productInfo?.supplier_id);
+            
+            console.log(`🔍 Enriching ${item.product_name}:`, {
+              found: !!productInfo,
+              product_id: productInfo?.id,
+              supplier_id: productInfo?.supplier_id,
+              cost_price: productInfo?.cost_price,
+              supplier_found: !!supplierInfo
+            });
+            
+            return {
+              ...item,
+              product_id: productInfo?.id,
+              supplier_id: productInfo?.supplier_id,
+              cost_price: productInfo?.cost_price || 0,
+              supplier: supplierInfo  // Pass full supplier object
+            };
+          });
+          
+          console.log("📊 Enriched reorder data:", enrichedReorderData);
+          setReorderData(enrichedReorderData);
           setReorderSummary(data.reorder_summary || null);
           
           console.log(`Forecast generated for ${transformedForecast.length} products`);
@@ -166,7 +243,13 @@ const Forecast = () => {
   };
 
   const handleReorder = (product) => {
-    alert(`Reorder functionality coming soon for: ${product.product_name}\n\nRecommended Quantity: ${product.recommended_order_qty} units`);
+    setSelectedReorderProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const handleOrderPlaced = (orderData) => {
+    console.log('✅ Order placed, refreshing pending orders...')
+    fetchPendingPurchaseOrders();
   };
 
   return (
@@ -442,13 +525,19 @@ const Forecast = () => {
                           </td>
                           <td className="border border-gray-200 p-3 text-center">
                             {item.recommended_order_qty > 0 ? (
-                              <button
-                                onClick={() => handleReorder(item)}
-                                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center gap-1 mx-auto"
-                              >
-                                <ShoppingCart size={14} />
-                                Reorder
-                              </button>
+                              pendingOrders.has(item.product_id) ? (
+                                <span className="whitespace-nowrap px-3 py-1.5 bg-gray-100 text-gray-500 rounded-lg text-xs font-medium">
+                                  Order Placed
+                                </span>
+                              ) : (
+                                <button
+                                  onClick={() => handleReorder(item)}
+                                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-medium transition-colors flex items-center gap-1 mx-auto"
+                                >
+                                  <ShoppingCart size={14} />
+                                  Reorder
+                                </button>
+                              )
                             ) : (
                               <span className="text-gray-400 text-xs">-</span>
                             )}
@@ -476,6 +565,14 @@ const Forecast = () => {
           </>
         )}
       </div>
+
+      {/* Reorder Modal */}
+      <ReorderModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        product={selectedReorderProduct}
+        onOrderPlaced={handleOrderPlaced}
+      />
     </div>
   );
 };

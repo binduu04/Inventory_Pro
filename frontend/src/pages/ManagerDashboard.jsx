@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Home, Users, Package, BarChart3, LogOut, Menu, X, TrendingUp} from 'lucide-react';
+import { Home, Users, Package, BarChart3, LogOut, Menu, X, TrendingUp, ShoppingCart} from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import UserManagement from '../components/UserManagement';
 import InventoryManagement from '../components/InventoryManagement';
-
+import PurchaseOrders from '../components/PurchaseOrders';
 import Forecast from '../components/Forecast';
 import Analytics from '../components/Analytics';
 
@@ -32,7 +32,8 @@ const ManagerDashboard = () => {
   { id: 'user-management', label: 'Users', icon: Users },
   { id: 'inventory', label: 'Inventory', icon: Package },
   { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-  { id: 'forecast', label: 'Forecast', icon: TrendingUp }
+  { id: 'forecast', label: 'Forecast', icon: TrendingUp },
+  { id: 'purchase-orders', label: 'Purchase Orders', icon: ShoppingCart }
 
 ];
 
@@ -48,7 +49,9 @@ const ManagerDashboard = () => {
       case 'analytics':
         return <Analytics />;
       case 'forecast':
-        return <Forecast />;  // 🔥 New line added
+        return <Forecast />;
+      case 'purchase-orders':
+        return <PurchaseOrders />;
       default:
         return <OverviewContent />;
     }

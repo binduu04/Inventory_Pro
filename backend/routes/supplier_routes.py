@@ -65,7 +65,7 @@ def get_suppliers():
 
 @supplier_bp.route('/<supplier_id>', methods=['GET'])
 @verify_token
-@require_role('manager')
+@require_role(['manager', 'biller','customer','all'])
 def get_supplier(supplier_id):
     """Get a specific supplier"""
     try:

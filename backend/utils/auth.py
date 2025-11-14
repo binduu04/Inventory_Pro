@@ -7,19 +7,23 @@ def verify_token(f):
     """Decorator to verify JWT token"""
     @wraps(f)
     def decorated_function(*args, **kwargs):
+        print(f"[AUTH] Verifying token for: {request.method} {request.path}")
         auth_header = request.headers.get('Authorization')
         
         if not auth_header:
+            print("[AUTH] No authorization header found")
             return jsonify({'error': 'No authorization header'}), 401
         
         try:
             # Extract token from "Bearer <token>"
             token = auth_header.split(' ')[1]
+            print(f"[AUTH] Token extracted: {token[:20]}...")
             
             # Get Supabase client
             supabase = get_supabase_client()
             
             # Verify token by making a request with it
+            print("[AUTH] Verifying with Supabase...")
             response = supabase.auth.get_user(token)
             
             if not response or not response.user:
@@ -51,8 +55,15 @@ def verify_token(f):
             return f(*args, **kwargs)
             
         except Exception as e:
-            print(f"Token verification error: {str(e)}")
-            return jsonify({'error': 'Invalid or expired token'}), 401
+            print("="*60)
+            print("[AUTH ERROR] Token verification failed!")
+            print(f"Error: {str(e)}")
+            print(f"Request path: {request.path}")
+            print(f"Request method: {request.method}")
+            import traceback
+            traceback.print_exc()
+            print("="*60)
+            return jsonify({'error': 'Invalid or expired token', 'details': str(e)}), 401
     
     return decorated_function
 
