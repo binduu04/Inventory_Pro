@@ -121,6 +121,7 @@ from flask import request, jsonify
 from datetime import datetime
 from config.supabase_config import get_supabase_client_with_token, get_supabase_admin_client
 from utils.discount_calculator import get_discount_for_product
+from utils.whatsapp_service import get_whatsapp_service
 from dotenv import load_dotenv
 import os
 
@@ -291,12 +292,29 @@ def confirm_payment():
                 "current_stock": new_stock
             }).eq("id", item["product_id"]).execute()
 
+        # 7️⃣ Send WhatsApp notification to customer
+        whatsapp_service = get_whatsapp_service()
+        whatsapp_result = whatsapp_service.send_order_confirmation(
+            customer_phone=customer.get("phone"),
+            customer_name=customer.get("full_name", "Customer"),
+            sale_id=sale_id,
+            total_amount=round(total_amount, 2),
+            items_count=len(validated_items)
+        )
+        
+        # Log WhatsApp status (but don't fail the order if WhatsApp fails)
+        if whatsapp_result['success']:
+            print(f"[WHATSAPP] Message sent successfully to {customer.get('phone')}")
+        else:
+            print(f"[WHATSAPP] Failed: {whatsapp_result['message']}")
+
         return jsonify({
             "success": True,
             "message": "Payment confirmed — Order created!",
             "sale_id": sale_id,
             "total_amount": round(total_amount, 2),
             "items": len(validated_items),
+            "whatsapp_sent": whatsapp_result['success']
         }), 200
 
     except Exception as e:
