@@ -83,7 +83,7 @@ def generate_forecast_api():
         # Go up from backend/routes/ -> backend/ -> project_root/
         project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         # csv_path = os.path.join(project_root, 'kirana_sales_data_v2.3_production_discount.csv')
-        csv_path = os.path.join(os.getcwd(), "kirana_sales_data_v2.3_production_discount.csv")
+        csv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "kirana_sales_data_v2.3_production_discount.csv")
 
         if not os.path.exists(csv_path):
             return jsonify({
