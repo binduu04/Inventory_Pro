@@ -104,7 +104,16 @@ def create_app():
     #         "allow_headers": ["Content-Type", "Authorization"]
     #     }
     # })
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
+    # CORS(app, resources={r"/api/*": {"origins": "*"}})
+    CORS(app, resources={r"/api/*": {
+        "origins": [
+            "https://inventory-pro-frontend.onrender.com",
+            "http://localhost:5173"
+        ],
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"]
+    }})
+
 
 
     # Register blueprints
