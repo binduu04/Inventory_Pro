@@ -120,7 +120,7 @@ def create_app():
     app.register_blueprint(supplier_bp, url_prefix="/api/suppliers")
     app.register_blueprint(biller_bp, url_prefix="/api/billers")
     app.register_blueprint(product_bp, url_prefix="/api/products")
-    app.register_blueprint(customer_bp, url_prefix="/api/customers")
+    app.register_blueprint(customer_bp, url_prefix="/api/customer")
     app.register_blueprint(cart_bp, url_prefix="/api/cart")
     app.register_blueprint(order_bp, url_prefix="/api/orders")
     app.register_blueprint(forecast_bp, url_prefix="/api/forecast")
