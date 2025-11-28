@@ -27,7 +27,7 @@ const Forecast = () => {
   const fetchPendingPurchaseOrders = async () => {
     if (!session?.access_token) return;
     try {
-      const response = await fetch("http://localhost:5000/api/orders/purchase-orders", {
+      const response = await fetch("/api/orders/purchase-orders", {
         headers: { "Authorization": `Bearer ${session.access_token}` }
       });
       const data = await response.json();
@@ -98,7 +98,7 @@ const Forecast = () => {
         console.log(`Fetched stock for ${products.length} products`);
 
         // Step 2: Call the forecast + reorder API
-        const response = await fetch("http://localhost:5000/api/forecast/generate-with-reorder", {
+        const response = await fetch("/api/forecast/generate-with-reorder", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

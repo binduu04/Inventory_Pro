@@ -46,7 +46,7 @@ const BillerDashboard = () => {
 
   const fetchPendingOrdersCount = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/orders/pending-orders', {
+      const response = await fetch('/api/orders/pending-orders', {
         headers: {
           'Authorization': `Bearer ${session?.access_token}`
         }
@@ -86,8 +86,8 @@ const BillerDashboard = () => {
       setLoading(true);
       const url =
         selectedCategory === "all"
-          ? "http://localhost:5000/api/billers/products"
-          : `http://localhost:5000/api/billers/products?category=${selectedCategory}`;
+          ? "/api/billers/products"
+          : `/api/billers/products?category=${selectedCategory}`;
 
       console.log("Fetching products from:", url);
       console.log(
@@ -123,7 +123,7 @@ const BillerDashboard = () => {
     try {
       console.log("Fetching categories...");
       const response = await fetch(
-        "http://localhost:5000/api/billers/categories",
+        "/api/billers/categories",
         {
           headers: {
             Authorization: `Bearer ${session?.access_token}`,
@@ -231,7 +231,7 @@ const BillerDashboard = () => {
         })),
       };
 
-      const response = await fetch("http://localhost:5000/api/billers/sales", {
+      const response = await fetch("/api/billers/sales", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${session?.access_token}`,

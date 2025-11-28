@@ -126,7 +126,7 @@ const SuppliersTab = ({ showAlert }) => {
   const fetchSuppliers = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/suppliers/', {
+      const response = await fetch('/api/suppliers/', {
         headers: {
           'Authorization': `Bearer ${session?.access_token}`
         }
@@ -147,7 +147,7 @@ const SuppliersTab = ({ showAlert }) => {
     if (!window.confirm('Are you sure you want to delete this supplier?')) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/suppliers/${supplierId}`, {
+      const response = await fetch(`/api/suppliers/${supplierId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${session?.access_token}`
@@ -303,8 +303,8 @@ const SupplierForm = ({ supplier, onCancel, onSuccess, showAlert }) => {
 
     try {
       const url = supplier 
-        ? `http://localhost:5000/api/suppliers/${supplier.id}`
-        : 'http://localhost:5000/api/suppliers/';
+        ? `/api/suppliers/${supplier.id}`
+        : '/api/suppliers/';
       
       const response = await fetch(url, {
         method: supplier ? 'PUT' : 'POST',
@@ -439,7 +439,7 @@ const BillersTab = ({ showAlert }) => {
   const fetchBillers = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/billers/', {
+      const response = await fetch('/api/billers/', {
         headers: {
           'Authorization': `Bearer ${session?.access_token}`
         }
@@ -460,7 +460,7 @@ const BillersTab = ({ showAlert }) => {
     if (!window.confirm('Are you sure you want to permanently delete this biller? This action cannot be undone.')) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/billers/${billerId}`, {
+      const response = await fetch(`/api/billers/${billerId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${session?.access_token}`
@@ -628,8 +628,8 @@ const BillerForm = ({ biller, onCancel, onSuccess, showAlert }) => {
 
     try {
       const url = biller 
-        ? `http://localhost:5000/api/billers/${biller.id}`
-        : 'http://localhost:5000/api/billers/';
+        ? `/api/billers/${biller.id}`
+        : '/api/billers/';
       
       const body = biller 
         ? { full_name: formData.full_name, phone: formData.phone }
@@ -766,7 +766,7 @@ const CustomersTab = () => {
   const fetchCustomers = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/customer/all", {
+      const response = await fetch("/api/customer/all", {
         headers: {
           Authorization: `Bearer ${session?.access_token}`,
         },
@@ -788,7 +788,7 @@ const CustomersTab = () => {
   const fetchOrders = async (customerId) => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/customer/${customerId}/orders`, {
+      const response = await fetch(`/api/customer/${customerId}/orders`, {
         headers: {
           Authorization: `Bearer ${session?.access_token}`,
         },
@@ -811,7 +811,7 @@ const CustomersTab = () => {
   const handleDelete = async (customerId) => {
     if (!window.confirm("Are you sure you want to delete this customer?")) return;
     try {
-      const response = await fetch(`http://localhost:5000/api/customer/${customerId}`, {
+      const response = await fetch(`/api/customer/${customerId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${session?.access_token}`,

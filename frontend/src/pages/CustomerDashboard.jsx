@@ -60,7 +60,7 @@ const CustomerDashboard = () => {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/products/", {
+      const response = await fetch("/api/products/", {
         headers: { Authorization: `Bearer ${session?.access_token}` },
       });
       const data = await response.json();
@@ -79,7 +79,7 @@ const CustomerDashboard = () => {
   const fetchCategories = async () => {
     try {
       const response = await fetch(
-        "http://localhost:5000/api/products/categories",
+        "/api/products/categories",
         {
           headers: { Authorization: `Bearer ${session?.access_token}` },
         }
@@ -94,7 +94,7 @@ const CustomerDashboard = () => {
   const fetchOrderHistory = async () => {
     try {
       const response = await fetch(
-        "http://localhost:5000/api/orders/my-orders",
+        "/api/orders/my-orders",
         {
           headers: { Authorization: `Bearer ${session?.access_token}` },
         }
@@ -141,7 +141,7 @@ const CustomerDashboard = () => {
   const handleUpdateUser = async (updatedUser) => {
     try {
       const response = await fetch(
-        "http://localhost:5000/api/customer/profile",
+        "/api/customer/profile",
         {
           method: "PUT",
           headers: {
@@ -280,7 +280,7 @@ const CustomerDashboard = () => {
         quantity: item.quantity,
       }));
 
-      const response = await fetch("http://localhost:5000/api/cart/validate", {
+      const response = await fetch("/api/cart/validate", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${session?.access_token}`,
@@ -325,7 +325,7 @@ const CustomerDashboard = () => {
       }));
 
       const response = await fetch(
-        "http://localhost:5000/api/cart/confirm-payment",
+        "/api/cart/confirm-payment",
         {
           method: "POST",
           headers: {

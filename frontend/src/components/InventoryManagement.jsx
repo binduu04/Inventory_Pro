@@ -37,13 +37,13 @@ const InventoryManagement = () => {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      let url = 'http://localhost:5000/api/products/';
+      let url = '/api/products/';
       const params = new URLSearchParams();
       
       if (filterCategory) params.append('category', filterCategory);
       if (filterSupplier) params.append('supplier_id', filterSupplier);
       if (showLowStock) {
-        url = 'http://localhost:5000/api/products/low-stock';
+        url = '/api/products/low-stock';
       } else if (params.toString()) {
         url += `?${params.toString()}`;
       }
@@ -67,7 +67,7 @@ const InventoryManagement = () => {
 
   const fetchSuppliers = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/suppliers/', {
+      const response = await fetch('/api/suppliers/', {
         headers: {
           'Authorization': `Bearer ${session?.access_token}`
         }
@@ -89,7 +89,7 @@ const InventoryManagement = () => {
     if (!window.confirm('Are you sure you want to delete this product?')) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/products/${productId}`, {
+      const response = await fetch(`/api/products/${productId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${session?.access_token}`
@@ -120,7 +120,7 @@ const InventoryManagement = () => {
 
     try {
       const deletePromises = selectedProducts.map(productId =>
-        fetch(`http://localhost:5000/api/products/${productId}`, {
+        fetch(`/api/products/${productId}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${session?.access_token}`
@@ -473,8 +473,8 @@ const ProductForm = ({ product, suppliers, categories, seasons, onCancel, onSucc
 
     try {
       const url = product 
-        ? `http://localhost:5000/api/products/${product.id}`
-        : 'http://localhost:5000/api/products/';
+        ? `/api/products/${product.id}`
+        : '/api/products/';
       
       // Use FormData for both add and update to send image file
       const formDataToSend = new FormData();

@@ -37,7 +37,7 @@ const CheckoutForm = ({ session, items }) => {
 
       try {
         const res = await fetch(
-          "http://localhost:5000/api/cart/create-payment-intent",
+          "/api/cart/create-payment-intent",
           {
             method: "POST",
             headers: {
@@ -85,7 +85,7 @@ const CheckoutForm = ({ session, items }) => {
 
     // if (paymentIntent.status === "succeeded") {
     //   const res = await fetch(
-    //     "http://localhost:5000/api/cart/confirm-payment",
+    //     "/api/cart/confirm-payment",
     //     {
     //       method: "POST",
     //       headers: {
@@ -113,7 +113,7 @@ const CheckoutForm = ({ session, items }) => {
     // }
     if (paymentIntent.status === "succeeded") {
       const res = await fetch(
-        "http://localhost:5000/api/cart/confirm-payment",
+        "/api/cart/confirm-payment",
         {
           method: "POST",
           headers: {

@@ -97,13 +97,15 @@ def create_app():
     )
 
     # CORS allowed origins
-    CORS(app, resources={
-        r"/api/*": {
-            "origins": ["http://localhost:5173", "http://localhost:5174"],
-            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-            "allow_headers": ["Content-Type", "Authorization"]
-        }
-    })
+    # CORS(app, resources={
+    #     r"/api/*": {
+    #         "origins": ["http://localhost:5173", "http://localhost:5174"],
+    #         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    #         "allow_headers": ["Content-Type", "Authorization"]
+    #     }
+    # })
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
+
 
     # Register blueprints
     app.register_blueprint(supplier_bp, url_prefix="/api/suppliers")

@@ -19,7 +19,7 @@ const PurchaseOrders = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("http://localhost:5000/api/orders/purchase-orders", {
+      const response = await fetch("/api/orders/purchase-orders", {
         headers: {
           "Authorization": `Bearer ${session.access_token}`
         }
@@ -48,7 +48,7 @@ const PurchaseOrders = () => {
 
     setReceivingOrder(orderId);
     try {
-      const response = await fetch(`http://localhost:5000/api/orders/purchase-order/${orderId}/receive`, {
+      const response = await fetch(`/api/orders/purchase-order/${orderId}/receive`, {
         method: "PUT",
         headers: {
           "Authorization": `Bearer ${session.access_token}`

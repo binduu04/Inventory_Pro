@@ -71,7 +71,7 @@ const BillerBillingHistory = ({ session }) => {
 
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:5000/api/billers/sales', {
+      const response = await fetch('/api/billers/sales', {
         headers: {
           Authorization: `Bearer ${session.access_token}`,
         },
@@ -97,7 +97,7 @@ const BillerBillingHistory = ({ session }) => {
     try {
       setLoadingItems({ ...loadingItems, [saleId]: true });
       const response = await fetch(
-        `http://localhost:5000/api/billers/sales/${saleId}/items`,
+        `/api/billers/sales/${saleId}/items`,
         {
           headers: {
             Authorization: `Bearer ${session.access_token}`,

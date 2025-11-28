@@ -140,9 +140,9 @@ const ReorderModal = ({ isOpen, onClose, product, onOrderPlaced }) => {
       };
       
       console.log("Step 3: Request body prepared:", requestBody);
-      console.log("Step 4: Sending POST to http://localhost:5000/api/orders/purchase-order");
+      console.log("Step 4: Sending POST to /api/orders/purchase-order");
 
-      const response = await fetch("http://localhost:5000/api/orders/purchase-order", {
+      const response = await fetch("/api/orders/purchase-order", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

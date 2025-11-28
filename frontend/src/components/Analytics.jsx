@@ -39,7 +39,7 @@ const Analytics = () => {
         setLoading(true);
         setError(null);
 
-        const baseUrl = "http://localhost:5000/api/analytics";
+        const baseUrl = "/api/analytics";
         const headers = {
           Authorization: `Bearer ${session.access_token}`,
           "Content-Type": "application/json",
