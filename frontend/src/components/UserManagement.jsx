@@ -760,9 +760,15 @@ const CustomersTab = () => {
 
   const showAlert = (message, type) => setAlert({ message, type });
 
+  // useEffect(() => {
+  //   fetchCustomers();
+  // }, []);
   useEffect(() => {
-    fetchCustomers();
-  }, []);
+    if (session?.access_token) {
+      fetchCustomers();
+    }
+  }, [session]);
+
 
   const fetchCustomers = async () => {
     setLoading(true);
