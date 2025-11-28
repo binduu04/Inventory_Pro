@@ -8,6 +8,7 @@ import {
   useElements,
 } from "@stripe/react-stripe-js";
 import { Loader2, CreditCard, Lock, ShoppingBag } from "lucide-react";
+import { API_URL } from "../config";
 
 const stripePromise = loadStripe(
   "pk_test_51QgOg4Kjkoqs3fx5TJqHrwb4aBPjHeNxykKD6bASzTDF13vPIZ89sdumhJvQWtvaavfHaboa65M32Yo9dMohejCa00SGCRcvgx"
@@ -37,7 +38,7 @@ const CheckoutForm = ({ session, items }) => {
 
       try {
         const res = await fetch(
-          "/api/cart/create-payment-intent",
+          `${API_URL}/cart/create-payment-intent`,
           {
             method: "POST",
             headers: {
@@ -113,7 +114,7 @@ const CheckoutForm = ({ session, items }) => {
     // }
     if (paymentIntent.status === "succeeded") {
       const res = await fetch(
-        "/api/cart/confirm-payment",
+        `${API_URL}/cart/confirm-payment`,
         {
           method: "POST",
           headers: {

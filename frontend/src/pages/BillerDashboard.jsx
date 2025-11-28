@@ -6,6 +6,10 @@ import { useNavigate } from "react-router-dom";
 import BillerBillingHistory from "../components/BillerBillingHistory";
 import OnlineOrdersManagement from "../components/OnlineOrdersManagement";
 
+
+import { API_URL } from "../config";
+
+
 const BillerDashboard = () => {
   const { user, signOut, session } = useAuth();
   const navigate = useNavigate();
@@ -46,7 +50,7 @@ const BillerDashboard = () => {
 
   const fetchPendingOrdersCount = async () => {
     try {
-      const response = await fetch('/api/orders/pending-orders', {
+      const response = await fetch(`${API_URL}/orders/pending-orders`, {
         headers: {
           'Authorization': `Bearer ${session?.access_token}`
         }
@@ -86,8 +90,8 @@ const BillerDashboard = () => {
       setLoading(true);
       const url =
         selectedCategory === "all"
-          ? "/api/billers/products"
-          : `/api/billers/products?category=${selectedCategory}`;
+          ? `${API_URL}/billers/products`
+          : `${API_URL}/billers/products?category=${selectedCategory}`;
 
       console.log("Fetching products from:", url);
       console.log(
@@ -123,7 +127,7 @@ const BillerDashboard = () => {
     try {
       console.log("Fetching categories...");
       const response = await fetch(
-        "/api/billers/categories",
+        `${API_URL}/billers/categories`,
         {
           headers: {
             Authorization: `Bearer ${session?.access_token}`,
@@ -231,7 +235,7 @@ const BillerDashboard = () => {
         })),
       };
 
-      const response = await fetch("/api/billers/sales", {
+      const response = await fetch(`${API_URL}/billers/sales`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${session?.access_token}`,

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp, Package, Receipt, Calendar, Search } from 'lucide-react';
+import { API_URL } from "../config";
 
 const BillerBillingHistory = ({ session }) => {
   const [sales, setSales] = useState([]);
@@ -71,7 +72,7 @@ const BillerBillingHistory = ({ session }) => {
 
     try {
       setLoading(true);
-      const response = await fetch('/api/billers/sales', {
+      const response = await fetch(`${API_URL}/billers/sales`, {
         headers: {
           Authorization: `Bearer ${session.access_token}`,
         },
@@ -97,7 +98,7 @@ const BillerBillingHistory = ({ session }) => {
     try {
       setLoadingItems({ ...loadingItems, [saleId]: true });
       const response = await fetch(
-        `/api/billers/sales/${saleId}/items`,
+        `${API_URL}/billers/sales/${saleId}/items`,
         {
           headers: {
             Authorization: `Bearer ${session.access_token}`,

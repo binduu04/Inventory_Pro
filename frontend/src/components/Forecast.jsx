@@ -4,6 +4,7 @@ import { supabase } from "../config/supabase";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import ReorderModal from "./ReorderModal";
 import { useAuth } from "../context/AuthContext";
+import { API_URL } from "../config";
 
 const Forecast = () => {
   const { session } = useAuth();
@@ -27,7 +28,7 @@ const Forecast = () => {
   const fetchPendingPurchaseOrders = async () => {
     if (!session?.access_token) return;
     try {
-      const response = await fetch("/api/orders/purchase-orders", {
+      const response = await fetch(`${API_URL}/orders/purchase-orders`, {
         headers: { "Authorization": `Bearer ${session.access_token}` }
       });
       const data = await response.json();
@@ -98,7 +99,7 @@ const Forecast = () => {
         console.log(`Fetched stock for ${products.length} products`);
 
         // Step 2: Call the forecast + reorder API
-        const response = await fetch("/api/forecast/generate-with-reorder", {
+        const response = await fetch(`${API_URL}/forecast/generate-with-reorder`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

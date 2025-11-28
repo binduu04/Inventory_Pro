@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Users, Plus, Edit2, Trash2, Search, X, Loader, Package, ShoppingBag, ListOrdered } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { API_URL } from "../config";
 
 // Custom Alert Component
 const CustomAlert = ({ message, type, onClose }) => {
@@ -126,7 +127,7 @@ const SuppliersTab = ({ showAlert }) => {
   const fetchSuppliers = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/suppliers/', {
+      const response = await fetch(`${API_URL}/suppliers/`, {
         headers: {
           'Authorization': `Bearer ${session?.access_token}`
         }
@@ -147,7 +148,7 @@ const SuppliersTab = ({ showAlert }) => {
     if (!window.confirm('Are you sure you want to delete this supplier?')) return;
 
     try {
-      const response = await fetch(`/api/suppliers/${supplierId}`, {
+      const response = await fetch(`${API_URL}/suppliers/${supplierId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${session?.access_token}`
@@ -303,8 +304,8 @@ const SupplierForm = ({ supplier, onCancel, onSuccess, showAlert }) => {
 
     try {
       const url = supplier 
-        ? `/api/suppliers/${supplier.id}`
-        : '/api/suppliers/';
+        ? `${API_URL}/suppliers/${supplier.id}`
+        : `${API_URL}/suppliers/`;
       
       const response = await fetch(url, {
         method: supplier ? 'PUT' : 'POST',
@@ -439,7 +440,7 @@ const BillersTab = ({ showAlert }) => {
   const fetchBillers = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/billers/', {
+      const response = await fetch(`${API_URL}/billers/`, {
         headers: {
           'Authorization': `Bearer ${session?.access_token}`
         }
@@ -460,7 +461,7 @@ const BillersTab = ({ showAlert }) => {
     if (!window.confirm('Are you sure you want to permanently delete this biller? This action cannot be undone.')) return;
 
     try {
-      const response = await fetch(`/api/billers/${billerId}`, {
+      const response = await fetch(`${API_URL}/billers/${billerId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${session?.access_token}`
@@ -628,8 +629,8 @@ const BillerForm = ({ biller, onCancel, onSuccess, showAlert }) => {
 
     try {
       const url = biller 
-        ? `/api/billers/${biller.id}`
-        : '/api/billers/';
+        ? `${API_URL}/billers/${biller.id}`
+        : `${API_URL}/billers/`;
       
       const body = biller 
         ? { full_name: formData.full_name, phone: formData.phone }
@@ -766,7 +767,7 @@ const CustomersTab = () => {
   const fetchCustomers = async () => {
     setLoading(true);
     try {
-      const response = await fetch("/api/customer/all", {
+      const response = await fetch(`${API_URL}/customer/all`, {
         headers: {
           Authorization: `Bearer ${session?.access_token}`,
         },
@@ -788,7 +789,7 @@ const CustomersTab = () => {
   const fetchOrders = async (customerId) => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/customer/${customerId}/orders`, {
+      const response = await fetch(`${API_URL}/customer/${customerId}/orders`, {
         headers: {
           Authorization: `Bearer ${session?.access_token}`,
         },
@@ -811,7 +812,7 @@ const CustomersTab = () => {
   const handleDelete = async (customerId) => {
     if (!window.confirm("Are you sure you want to delete this customer?")) return;
     try {
-      const response = await fetch(`/api/customer/${customerId}`, {
+      const response = await fetch(`${API_URL}/customer/${customerId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${session?.access_token}`,

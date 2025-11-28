@@ -24,6 +24,7 @@ import {
   Cell,
   Legend,
 } from "recharts";
+import { API_URL } from "../config";
 
 const Analytics = () => {
   const { session } = useAuth();
@@ -39,7 +40,7 @@ const Analytics = () => {
         setLoading(true);
         setError(null);
 
-        const baseUrl = "/api/analytics";
+        const baseUrl = `${API_URL}/analytics`;
         const headers = {
           Authorization: `Bearer ${session.access_token}`,
           "Content-Type": "application/json",

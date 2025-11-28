@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Plus, Edit2, Trash2, Search, Package, AlertTriangle, Upload, X, Image as ImageIcon, CheckSquare, Square } from 'lucide-react';
+import { API_URL } from "../config";
 
 const InventoryManagement = () => {
   const { session } = useAuth();
@@ -37,13 +38,13 @@ const InventoryManagement = () => {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      let url = '/api/products/';
+      let url = `${API_URL}/products/`;
       const params = new URLSearchParams();
       
       if (filterCategory) params.append('category', filterCategory);
       if (filterSupplier) params.append('supplier_id', filterSupplier);
       if (showLowStock) {
-        url = '/api/products/low-stock';
+        url = `${API_URL}/products/low-stock`;
       } else if (params.toString()) {
         url += `?${params.toString()}`;
       }
@@ -67,7 +68,7 @@ const InventoryManagement = () => {
 
   const fetchSuppliers = async () => {
     try {
-      const response = await fetch('/api/suppliers/', {
+      const response = await fetch(`${API_URL}/suppliers/`, {
         headers: {
           'Authorization': `Bearer ${session?.access_token}`
         }
@@ -89,7 +90,7 @@ const InventoryManagement = () => {
     if (!window.confirm('Are you sure you want to delete this product?')) return;
 
     try {
-      const response = await fetch(`/api/products/${productId}`, {
+      const response = await fetch(`${API_URL}/products/${productId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${session?.access_token}`
@@ -120,7 +121,7 @@ const InventoryManagement = () => {
 
     try {
       const deletePromises = selectedProducts.map(productId =>
-        fetch(`/api/products/${productId}`, {
+        fetch(`${API_URL}/products/${productId}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${session?.access_token}`
@@ -473,8 +474,8 @@ const ProductForm = ({ product, suppliers, categories, seasons, onCancel, onSucc
 
     try {
       const url = product 
-        ? `/api/products/${product.id}`
-        : '/api/products/';
+        ? `${API_URL}/products/${product.id}`
+        : `${API_URL}/products/`;
       
       // Use FormData for both add and update to send image file
       const formDataToSend = new FormData();

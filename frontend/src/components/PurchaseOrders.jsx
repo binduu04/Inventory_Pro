@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { X, Package, Truck, CheckCircle, Eye, Calendar, User, Mail, Phone, ShoppingBag } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { API_URL } from "../config";
 
 const PurchaseOrders = () => {
   const { session } = useAuth();
@@ -19,7 +20,7 @@ const PurchaseOrders = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("/api/orders/purchase-orders", {
+      const response = await fetch(`${API_URL}/orders/purchase-orders`, {
         headers: {
           "Authorization": `Bearer ${session.access_token}`
         }
@@ -48,7 +49,7 @@ const PurchaseOrders = () => {
 
     setReceivingOrder(orderId);
     try {
-      const response = await fetch(`/api/orders/purchase-order/${orderId}/receive`, {
+      const response = await fetch(`${API_URL}/orders/purchase-order/${orderId}/receive`, {
         method: "PUT",
         headers: {
           "Authorization": `Bearer ${session.access_token}`

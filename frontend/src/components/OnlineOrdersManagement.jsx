@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Package, CheckCircle, Clock, User, Phone, Calendar, ShoppingBag, X } from 'lucide-react';
+import { API_URL } from "../config";
 
 const OnlineOrdersManagement = ({ session, onOrdersChange }) => {
   const [orders, setOrders] = useState([]);
@@ -14,7 +15,7 @@ const OnlineOrdersManagement = ({ session, onOrdersChange }) => {
   const fetchPendingOrders = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/orders/pending-orders', {
+      const response = await fetch(`${API_URL}/orders/pending-orders`, {
         headers: {
           'Authorization': `Bearer ${session?.access_token}`
         }
@@ -38,7 +39,7 @@ const OnlineOrdersManagement = ({ session, onOrdersChange }) => {
   const markAsPacked = async (saleId) => {
     setProcessingOrderId(saleId);
     try {
-      const response = await fetch(`/api/orders/mark-packed/${saleId}`, {
+      const response = await fetch(`${API_URL}/orders/mark-packed/${saleId}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${session?.access_token}`
@@ -64,7 +65,7 @@ const OnlineOrdersManagement = ({ session, onOrdersChange }) => {
   const markAsCompleted = async (saleId) => {
     setProcessingOrderId(saleId);
     try {
-      const response = await fetch(`/api/orders/mark-completed/${saleId}`, {
+      const response = await fetch(`${API_URL}/orders/mark-completed/${saleId}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${session?.access_token}`

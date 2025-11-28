@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { X, Package, DollarSign, User, Mail, Phone, ShoppingCart, AlertCircle,Send } from "lucide-react";
 import { supabase } from "../config/supabase";
 import { useAuth } from "../context/AuthContext";
+import { API_URL } from "../config";
 
 const ReorderModal = ({ isOpen, onClose, product, onOrderPlaced }) => {
   const { session } = useAuth();
@@ -140,9 +141,9 @@ const ReorderModal = ({ isOpen, onClose, product, onOrderPlaced }) => {
       };
       
       console.log("Step 3: Request body prepared:", requestBody);
-      console.log("Step 4: Sending POST to /api/orders/purchase-order");
+      console.log(`Step 4: Sending POST to ${API_URL}/orders/purchase-order`);
 
-      const response = await fetch("/api/orders/purchase-order", {
+      const response = await fetch(`${API_URL}/orders/purchase-order`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -9,6 +9,10 @@ import ProfileModal from "../components/ProfileModal";
 import CustomAlert from "../components/CustomAlert";
 import CheckoutModal from "../components/CheckoutModal";
 
+
+import { API_URL } from "../config";
+
+
 const CustomerDashboard = () => {
   const { user, signOut, session } = useAuth();
   const navigate = useNavigate();
@@ -60,7 +64,7 @@ const CustomerDashboard = () => {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const response = await fetch("/api/products/", {
+      const response = await fetch(`${API_URL}/products/`, {
         headers: { Authorization: `Bearer ${session?.access_token}` },
       });
       const data = await response.json();
@@ -79,7 +83,7 @@ const CustomerDashboard = () => {
   const fetchCategories = async () => {
     try {
       const response = await fetch(
-        "/api/products/categories",
+        `${API_URL}/products/categories`,
         {
           headers: { Authorization: `Bearer ${session?.access_token}` },
         }
@@ -94,7 +98,7 @@ const CustomerDashboard = () => {
   const fetchOrderHistory = async () => {
     try {
       const response = await fetch(
-        "/api/orders/my-orders",
+        `${API_URL}/orders/my-orders`,
         {
           headers: { Authorization: `Bearer ${session?.access_token}` },
         }
@@ -141,7 +145,7 @@ const CustomerDashboard = () => {
   const handleUpdateUser = async (updatedUser) => {
     try {
       const response = await fetch(
-        "/api/customer/profile",
+        `${API_URL}/customer/profile`,
         {
           method: "PUT",
           headers: {
@@ -280,7 +284,7 @@ const CustomerDashboard = () => {
         quantity: item.quantity,
       }));
 
-      const response = await fetch("/api/cart/validate", {
+      const response = await fetch(`${API_URL}/cart/validate`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${session?.access_token}`,
@@ -325,7 +329,7 @@ const CustomerDashboard = () => {
       }));
 
       const response = await fetch(
-        "/api/cart/confirm-payment",
+        `${API_URL}/cart/confirm-payment`,
         {
           method: "POST",
           headers: {
